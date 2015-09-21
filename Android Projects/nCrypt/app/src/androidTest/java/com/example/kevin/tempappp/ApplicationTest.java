@@ -1,4 +1,4 @@
-package ncrypt.ncrypt_beta;
+package com.example.kevin.tempappp;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

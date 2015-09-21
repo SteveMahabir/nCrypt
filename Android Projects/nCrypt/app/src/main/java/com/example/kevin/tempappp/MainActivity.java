@@ -1,4 +1,4 @@
-package ncrypt.ncrypt;
+package com.example.kevin.tempappp;
 
 import android.app.Activity;
 import android.os.Bundle;
