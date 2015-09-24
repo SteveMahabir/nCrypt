@@ -1,9 +1,12 @@
 package com.example.kevin.tempappp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
@@ -33,5 +36,22 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void OnClick(View view) {
+        switch (view.getId()){
+            case R.id.send:
+                final EditText message =  (EditText) findViewById(R.id.chatLine);
+
+
+                Intent smsintent = new Intent(Intent.ACTION_VIEW);
+                smsintent.putExtra("address", "5194945387");
+                smsintent.putExtra("address", "5194945387");
+                smsintent.putExtra("sms_body",message.getText().toString() );
+                smsintent.setType("vnd.android-dir/mms-sms");
+                startActivity(smsintent);
+
+                break;
+        }
     }
 }
