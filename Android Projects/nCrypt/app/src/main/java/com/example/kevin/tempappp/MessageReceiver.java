@@ -26,8 +26,8 @@ public class MessageReceiver extends BroadcastReceiver {
                 recievedMsgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
                 str += "SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + recievedMsgs[i].getMessageBody().toString();
             }
-
-            Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+            MainActivity.chatMessageList.add(new TextMessage(true, str));
+            Toast.makeText(context, str, Toast.LENGTH_LONG).show();
         }
     }
 }

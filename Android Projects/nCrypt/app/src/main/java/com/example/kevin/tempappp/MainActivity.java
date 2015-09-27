@@ -15,18 +15,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity {
 
     private String phoneNumber;
     private EditText edtMessage;
+    public static List chatMessageList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        chatMessageList = new ArrayList();
+        phoneNumber = "5192819776";
         edtMessage=(EditText)findViewById(R.id.chatLine);
     }
 
-    public void sendMsg() {
+
+    public void sendMsg(String msg, String phone) {
 
 
         String sent = "SMS_SENT";
@@ -44,14 +52,15 @@ public class MainActivity extends Activity {
                 }
                 else
                 {
-                    Toast.makeText(getBaseContext(), "SMS could not sent",
+                    Toast.makeText(getBaseContext(), "SMS could not send",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, edtMessage.getText().toString(), sentPI, null);
+        chatMessageList.add(new TextMessage(false, msg));
+        sms.sendTextMessage(phone, null, msg, sentPI, null);
     }
 
     @Override
@@ -79,7 +88,14 @@ public class MainActivity extends Activity {
     public void OnClick(View view) {
         switch (view.getId()){
             case R.id.send:
-                final EditText message =  (EditText) findViewById(R.id.chatLine);
+
+                String message = edtMessage.getText().toString().trim();
+                if (message != "")
+                {
+                    sendMsg(message, phoneNumber);
+                    edtMessage.setText("");
+                }
+                /* final EditText message =  (EditText) findViewById(R.id.chatLine);
 
 
                 Intent smsintent = new Intent(Intent.ACTION_VIEW);
@@ -87,7 +103,7 @@ public class MainActivity extends Activity {
                 smsintent.putExtra("address", "5194945387");
                 smsintent.putExtra("sms_body",message.getText().toString() );
                 smsintent.setType("vnd.android-dir/mms-sms");
-                startActivity(smsintent);
+                startActivity(smsintent); */
 
                 break;
         }
