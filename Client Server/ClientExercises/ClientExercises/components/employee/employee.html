@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees</title>
+    <meta charset="utf-8" />
+    <link href="../../css/exercises.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="text-center">
+            <h3>Employees</h3>
+        </div>
+        <div class="text-center col-lg-12 col-sm-12 col-xs-12 panel panel-heading"
+             style="position: relative; top:20px">
+            <div class="col-lg-1 col-sm-1 col-xs-1 text-left"
+                 ng-click="predicate = 'employeeid'; reverse=!reverse; employee.findSelected(predicate, reverse);">#</div>
+            <div class="col-lg-1 col-sm-2 col-xs-2 text-center"
+                 ng-click="predicate = 'title'; reverse=!reverse; employee.findSelected(predicate, reverse);">Title</div>
+            <div class="col-lg-4 col-sm-4 col-xs-4 text-left"
+                 ng-click="predicate = 'firstname'; reverse=!reverse; employee.findSelected(predicaten, reverse);">First Name</div>
+            <div class="col-lg-4 col-sm-4 col-xs-4 text-left"
+                 ng-click="predicate = 'lastname'; reverse=!reverse; employee.findSelected(predicate, reverse);">Last Name</div>
+        </div>
+        <div style="position:relative; padding-top:-20px;" id="list">
+            <div class="rowGray col-lg-12 col-sm-12 col-xs-12" ng-click="employee.selectRow(-1, null)">
+                ...Click to add, else click on desired employee
+            </div>
+            <div class="col-lg-12 col-sm-12 col-xs-12" ng-repeat="emp in employee.employees"
+                 ng-class="{rowGray: $odd, rowWhite: $even, ItemSelected: $index === employee.selectedRow}"
+                 ng-click="employee.selectRow($index, emp)">
+                <div class="col-lg-1 col-sm-1 col-xs-1 text-left">{{emp.employeeid}}</div>
+                <div class="col-lg-1 col-sm-2 col-xs-2 text-left">{{emp.title}}</div>
+                <div class="col-lg-4 col-sm-4 col-xs-4 text-left">{{emp.firstname}}</div>
+                <div class="col-lg-4 col-sm-4 col-xs-4 text-left">{{emp.lastname}}</div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-xs-2">&nbsp;</div>
+            <div class="col-lg-6 col-sm-6 col-xs-8 text-center label label-default"
+                 style="bottom:-50px; position:relative; font-size: small;">
+                {{employee.status}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

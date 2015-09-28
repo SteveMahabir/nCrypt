@@ -1,0 +1,29 @@
+﻿body {
+}
+
+.rowGray {
+    background-color: gainsboro;
+}
+
+.rowWhite {
+    background-color: white;
+}
+
+.panel-black{
+    background-color: black; 
+    color: white;
+}
+
+.itemSelected{
+     font-weight: bold;
+     font-size: 14px;
+     color: black;
+     background-color: yellow;
+}
+
+.custom-error{
+    font-size: x-small;
+    font-weight: bold;
+    color: red;
+    text-align: left;
+}
