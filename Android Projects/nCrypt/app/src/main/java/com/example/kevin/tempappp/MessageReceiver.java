@@ -27,6 +27,9 @@ public class MessageReceiver extends BroadcastReceiver {
                 str += "SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + recievedMsgs[i].getMessageBody().toString();
             }
             MainActivity.chatMessageList.add(new TextMessage(true, str));
+
+
+
             Toast.makeText(context, str, Toast.LENGTH_LONG).show();
         }
     }

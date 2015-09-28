@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,15 +23,22 @@ public class MainActivity extends Activity {
 
     private String phoneNumber;
     private EditText edtMessage;
-    public static List chatMessageList;
+    public static ArrayList<TextMessage> chatMessageList;
+
+    TextView temptxtview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         chatMessageList = new ArrayList();
-        phoneNumber = "5192819776";
+        phoneNumber = "5194945387";
         edtMessage=(EditText)findViewById(R.id.chatLine);
+        temptxtview = new TextView(this);
+
+
+
+
     }
 
 
@@ -47,6 +55,32 @@ public class MainActivity extends Activity {
             public void onReceive(Context arg0, Intent arg1) {
                 if(getResultCode() == Activity.RESULT_OK)
                 {
+                    //This is where we add a sent message!!
+                    //temptxtview = new TextView();
+                    for(TextMessage T: chatMessageList) {
+                        //if incoming left
+                        if(T.incoming)
+                        {
+                            //add text message to list of text messages on screen with left offset
+
+
+
+                        }
+                        //else right
+                        else
+                        {
+                            //add text message to list of text messages on screen with right offset
+
+
+                        }
+
+
+                        //temptxtview.setText(T.text);
+                        //temptxtview.setTextSize(40);
+                        //setContentView(temptxtview);
+                    }
+
+
                     Toast.makeText(getBaseContext(), "SMS sent",
                             Toast.LENGTH_SHORT).show();
                 }
