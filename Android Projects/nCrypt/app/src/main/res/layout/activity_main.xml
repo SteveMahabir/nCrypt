@@ -13,41 +13,12 @@
         android:layout_height="match_parent"
         android:weightSum="10">
 
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:id="@+id/scrollView"
+        <ListView
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:id="@+id/listView"
             android:layout_weight="1"
-            android:fillViewport="false">
-
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stretchColumns="1" >
-
-                <TableRow
-                    android:id="@+id/tableRow1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <!-- insert chat message here !-->
-
-
-                </TableRow>
-
-                <View
-                    android:layout_height="2dip"
-                    android:background="#000" />
-
-                <TableRow
-                    android:id="@+id/tableRow2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-
-                </TableRow>
-            </TableLayout>
-        </ScrollView>
+            android:layout_margin="8dp" />
 
 
         <LinearLayout
@@ -86,6 +57,8 @@
 
 
     </LinearLayout>
+
+
 
 
 </RelativeLayout>

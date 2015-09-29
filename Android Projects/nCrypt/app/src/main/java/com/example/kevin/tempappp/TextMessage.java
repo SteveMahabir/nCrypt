@@ -12,4 +12,12 @@ public class TextMessage {
         this.incoming = incoming;
         this.text = text;
     }
+    public String getText(){
+        return this.text;
+    }
+
+    public boolean getIncoming()
+    {
+        return this.incoming;
+    }
 }

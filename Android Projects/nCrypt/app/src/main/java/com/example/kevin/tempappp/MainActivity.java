@@ -1,20 +1,22 @@
 package com.example.kevin.tempappp;
 
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +26,36 @@ public class MainActivity extends Activity {
     private String phoneNumber;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMessageList;
+    ListView lv;
 
     TextView temptxtview;
+
+    MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        chatMessageList = new ArrayList();
+        chatMessageList = new ArrayList<TextMessage>();
+
+        chatMessageList.add(new TextMessage(true, "In"));
+        chatMessageList.add(new TextMessage(false,"Out"));
+        chatMessageList.add(new TextMessage(true ,"In"));
+        chatMessageList.add(new TextMessage(false,"Out"));
+        chatMessageList.add(new TextMessage(true ,"In"));
+        chatMessageList.add(new TextMessage(false,"Out"));
+        chatMessageList.add(new TextMessage(true ,"In"));
+        chatMessageList.add(new TextMessage(false,"Out"));
+
         phoneNumber = "5194945387";
         edtMessage=(EditText)findViewById(R.id.chatLine);
         temptxtview = new TextView(this);
 
+        adapter = new MyAdapter(this, chatMessageList);
 
-
-
+        lv = (ListView) findViewById(R.id.listView);
+        lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        lv.setAdapter(adapter);
     }
 
 
@@ -55,30 +72,18 @@ public class MainActivity extends Activity {
             public void onReceive(Context arg0, Intent arg1) {
                 if(getResultCode() == Activity.RESULT_OK)
                 {
+                    //  singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT : Gravity.RIGHT);
+
                     //This is where we add a sent message!!
-                    //temptxtview = new TextView();
-                    for(TextMessage T: chatMessageList) {
-                        //if incoming left
-                        if(T.incoming)
-                        {
-                            //add text message to list of text messages on screen with left offset
+                    lv = (ListView) findViewById(R.id.listView);
+                    lv.setAdapter(adapter);
 
-
-
-                        }
-                        //else right
-                        else
-                        {
-                            //add text message to list of text messages on screen with right offset
-
-
-                        }
 
 
                         //temptxtview.setText(T.text);
                         //temptxtview.setTextSize(40);
                         //setContentView(temptxtview);
-                    }
+
 
 
                     Toast.makeText(getBaseContext(), "SMS sent",
