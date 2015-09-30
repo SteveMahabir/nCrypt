@@ -24,7 +24,8 @@ public class MessageReceiver extends BroadcastReceiver {
             for (int i=0; i < pdus.length; ++i)
             {
                 recievedMsgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-                str += "SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + recievedMsgs[i].getMessageBody().toString();
+                str += recievedMsgs[i].getMessageBody().toString();
+                //pulled ""SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + " out of the str but will need for the phone number!!
             }
             MainActivity.chatMessageList.add(new TextMessage(true, str));
 
