@@ -8,6 +8,7 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
+    MainActivity m;
     public MessageReceiver() {
     }
 
@@ -29,7 +30,7 @@ public class MessageReceiver extends BroadcastReceiver {
             }
             MainActivity.chatMessageList.add(new TextMessage(true, str));
 
-
+            m.showNotification();
 
             Toast.makeText(context, str, Toast.LENGTH_LONG).show();
         }
