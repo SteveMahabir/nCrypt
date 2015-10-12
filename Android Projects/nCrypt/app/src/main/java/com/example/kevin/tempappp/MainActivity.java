@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         chatMessageList.add(new TextMessage(true ,"In"));
         chatMessageList.add(new TextMessage(false,"Out"));
 
-        phoneNumber = "5194945387";
+        phoneNumber = "5195202520";
         edtMessage=(EditText)findViewById(R.id.chatLine);
         temptxtview = new TextView(this);
 
@@ -170,18 +170,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void showNotification(){
+    public static void showNotification(Context context){
 
         // define sound URI, the sound to be played when there's a notification
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         // intent triggered, you can add other intent for other actions
-        Intent intent = new Intent(MainActivity.this, NotificationReceiver.class);
-        PendingIntent pIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, 0);
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         // this is it, we'll build the notification!
         // in the addAction method, if you don't want any icon, just set the first param to 0
-        Notification mNotification = new Notification.Builder(this)
+        Notification mNotification = new Notification.Builder(context)
 
                 .setContentTitle("New Post!")
                 .setContentText("Here's a new message for you!")
@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
 
                 .build();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
         // If you want to hide the notification after it was selected, do the code below
         // myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
