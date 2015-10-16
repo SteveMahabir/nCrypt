@@ -23,6 +23,9 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
+    // Main Encryption Object
+    Encryption encryption;
+
     private String phoneNumber;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMessageList;
@@ -36,6 +39,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Setup and generate new encryption keys
+        encryption = new Encryption(this.getBaseContext());
+        encryption.GenerateKey();
+
         chatMessageList = new ArrayList<TextMessage>();
 
         chatMessageList.add(new TextMessage(true, "In"));
@@ -106,6 +114,7 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -131,9 +140,18 @@ public class MainActivity extends Activity {
                 String message = edtMessage.getText().toString().trim();
                 if (message != "")
                 {
+
+                    encryption.Encrypt(message);
+                    Toast.makeText(getApplicationContext(), "ENCODED : " + encryption.EncodedMessage(),Toast.LENGTH_SHORT).show();
+
+                    encryption.Decrypt();
+                    Toast.makeText(getApplicationContext(), "DECODED : " + encryption.DecodedMessage(),Toast.LENGTH_SHORT).show();
+
                     sendMsg(message, phoneNumber);
                     edtMessage.setText("");
+
                 }
+
                 /* final EditText message =  (EditText) findViewById(R.id.chatLine);
 
 

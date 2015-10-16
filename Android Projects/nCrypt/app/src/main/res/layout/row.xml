@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     >
+
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -14,7 +15,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/outgoingLogo"
-        android:src="@drawable/logo2"
+        android:src="@drawable/hdpi"
         android:layout_alignParentRight="true"/>
 
     <TextView

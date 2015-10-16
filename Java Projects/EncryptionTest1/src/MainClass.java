@@ -7,15 +7,11 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Main 
-{
-  public static void main(String[] args) throws Exception 
-  {
+public class MainClass {
+  public static void main(String[] args) throws Exception {
     KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
     keyGenerator.init(128);
     Key blowfishKey = keyGenerator.generateKey();
-    
-    System.out.println("Generated Key");
 
     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
     keyPairGenerator.initialize(1024);
@@ -25,23 +21,13 @@ public class Main
     cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPublic());
 
     byte[] blowfishKeyBytes = blowfishKey.getEncoded();
-    
-    System.out.println("Current Key:");
     System.out.println(new String(blowfishKeyBytes));
-    
     byte[] cipherText = cipher.doFinal(blowfishKeyBytes);
-    System.out.println("Another Key:");
     System.out.println(new String(cipherText));
-    
     cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 
     byte[] decryptedKeyBytes = cipher.doFinal(cipherText);
     System.out.println(new String(decryptedKeyBytes));
-    
     SecretKey newBlowfishKey = new SecretKeySpec(decryptedKeyBytes, "Blowfish");
-    
-    System.out.println("\nNew Key Gen:");
-    
-    System.out.println(newBlowfishKey.getEncoded());
   }
 }
