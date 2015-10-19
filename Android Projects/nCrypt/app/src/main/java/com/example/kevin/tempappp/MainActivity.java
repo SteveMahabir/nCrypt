@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +60,7 @@ public class MainActivity extends Activity {
         chatMessageList.add(new TextMessage(true ,"In"));
         chatMessageList.add(new TextMessage(false,"Out"));
 
-        phoneNumber = "5195202520";
+        phoneNumber = "5198546109";
         edtMessage=(EditText)findViewById(R.id.chatLine);
         temptxtview = new TextView(this);
 
@@ -174,8 +175,6 @@ public class MainActivity extends Activity {
 
         // define sound URI, the sound to be played when there's a notification
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        // intent triggered, you can add other intent for other actions
         Intent intent = new Intent(context, NotificationReceiver.class);
         PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
@@ -194,11 +193,15 @@ public class MainActivity extends Activity {
 
                 .build();
 
+
+        int mId = 1;
+
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 
         // If you want to hide the notification after it was selected, do the code below
         // myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, mNotification);
+        // mId allows you to update the notification later on.
+                notificationManager.notify(mId, mNotification);
+        //notificationManager.notify(0, mNotification);
     }
 }
