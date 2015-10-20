@@ -2,16 +2,11 @@ package com.example.kevin.tempappp;
 
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.Menu;
@@ -60,7 +55,7 @@ public class MainActivity extends Activity {
         chatMessageList.add(new TextMessage(true ,"In"));
         chatMessageList.add(new TextMessage(false,"Out"));
 
-        phoneNumber = "5198546109";
+        phoneNumber = "5194945387";
         edtMessage=(EditText)findViewById(R.id.chatLine);
         temptxtview = new TextView(this);
 
@@ -169,39 +164,5 @@ public class MainActivity extends Activity {
 
                 break;
         }
-    }
-
-    public static void showNotification(Context context){
-
-        // define sound URI, the sound to be played when there's a notification
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Intent intent = new Intent(context, NotificationReceiver.class);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        // this is it, we'll build the notification!
-        // in the addAction method, if you don't want any icon, just set the first param to 0
-        Notification mNotification = new Notification.Builder(context)
-
-                .setContentTitle("New Post!")
-                .setContentText("Here's a new message for you!")
-                .setSmallIcon(R.drawable.icon)
-                .setContentIntent(pIntent)
-                .setSound(soundUri)
-
-                .addAction(R.drawable.icon, "View", pIntent)
-                .addAction(0, "Remind", pIntent)
-
-                .build();
-
-
-        int mId = 1;
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-
-        // If you want to hide the notification after it was selected, do the code below
-        // myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-        // mId allows you to update the notification later on.
-                notificationManager.notify(mId, mNotification);
-        //notificationManager.notify(0, mNotification);
     }
 }

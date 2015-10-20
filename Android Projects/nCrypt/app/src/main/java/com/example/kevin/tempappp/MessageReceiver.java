@@ -8,22 +8,11 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 public class MessageReceiver extends BroadcastReceiver {
-
     public MessageReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Create service Intent
-        Intent serviceIntent = new Intent(context, nCryptService.class);
-        // Start service
-        context.startService(serviceIntent);
-
-        //Start App On Boot Start Up
-        Intent App = new Intent(context, MainActivity.class);
-        App.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(App);
-
         Bundle bundle = intent.getExtras();
         SmsMessage[] recievedMsgs = null;
         String str = "";
@@ -40,9 +29,9 @@ public class MessageReceiver extends BroadcastReceiver {
             }
             MainActivity.chatMessageList.add(new TextMessage(true, str));
 
-            MainActivity.showNotification(context);
 
-            //Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+
+            Toast.makeText(context, str, Toast.LENGTH_LONG).show();
         }
     }
 }
