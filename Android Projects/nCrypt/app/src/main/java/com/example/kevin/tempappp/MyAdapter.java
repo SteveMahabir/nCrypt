@@ -50,6 +50,10 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             // 3. Get the text view from the rowView
             imgViewOut.setVisibility(View.GONE);
             msgView = (TextView) rowView.findViewById(R.id.incoming);
+
+
+            // 4. Set the text for textView
+            msgView.setText("");
         }
         else
         {
@@ -59,11 +63,11 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             // 3. Get the text view from the rowView
             msgView = (TextView) rowView.findViewById(R.id.outgoing);
 
+            // 4. Set the text for textView
+            msgView.setText(msgArrayList.get(position).getText());
         }
 
 
-        // 4. Set the text for textView
-        msgView.setText(msgArrayList.get(position).getText());
 
         //set incoming or outgoing
         msgView.setGravity(msgArrayList.get(position).getIncoming() ? Gravity.LEFT : Gravity.RIGHT);
