@@ -14,12 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MenuAdapter extends ArrayAdapter<TextMessage> {
+public class MenuAdapter extends ArrayAdapter<Conversation> {
 
     private final Context context;
-    private final ArrayList<TextMessage> phoneNoArrayList;
+    private final ArrayList<Conversation> phoneNoArrayList;
 
-    public MenuAdapter(Context context, ArrayList<TextMessage> phoneNoArrayList) {
+    public MenuAdapter(Context context, ArrayList<Conversation> phoneNoArrayList) {
 
         super(context, R.layout.row, phoneNoArrayList);
 
@@ -43,7 +43,7 @@ public class MenuAdapter extends ArrayAdapter<TextMessage> {
 
 
             // 4. Set the text for textView
-            msgView.setText(phoneNoArrayList.get(position).getNumber());
+            msgView.setText(phoneNoArrayList.get(position).getPhoneNumber());
             //set incoming or outgoing
             msgView.setGravity(Gravity.LEFT);
 

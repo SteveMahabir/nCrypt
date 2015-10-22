@@ -68,7 +68,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         }
         else
         {
-            if(msgArrayList.get(position).getToPhoneno().equalsIgnoreCase(phoneNo)) {
+            //if(msgArrayList.get(position).getToPhoneno().equalsIgnoreCase(phoneNo)) {
                 //outgoing
                 imgViewIn.setVisibility(View.GONE);
                 // 3. Get the text view from the rowView
@@ -80,7 +80,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 //create a listening object and giving it the message view. this is to show on a press and hold
                 imgViewOut.setOnTouchListener(new touchListener(msgView));
                 msgView.setVisibility(View.INVISIBLE);
-            }
+           /* }
             else
             {
                 {
@@ -89,7 +89,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                     imgViewIn.setVisibility(View.GONE);
                     imgViewOut.setVisibility(View.GONE);
                 }
-            }
+            }*/
         }
 
 

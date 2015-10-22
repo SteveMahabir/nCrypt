@@ -40,7 +40,8 @@ public class MessageReceiver extends BroadcastReceiver {
                 nmbr = recievedMsgs[i].getOriginatingAddress();
                 //pulled ""SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + " out of the str but will need for the phone number!!
             }
-            MainActivity.chatMessageList.add(new TextMessage(true, str, nmbr,"", 0, 0));
+
+            //MainActivity.chatMessageList.add(new TextMessage(true, str, nmbr,"", 0, 0));
 
             MainActivity.showNotification(context);
 

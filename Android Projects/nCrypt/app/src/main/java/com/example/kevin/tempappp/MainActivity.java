@@ -46,16 +46,12 @@ public class MainActivity extends Activity {
 
     private String phoneNumber;
     private EditText edtMessage;
-    public static ArrayList<TextMessage> chatMessageList;
-    public static ArrayList<TextMessage> numbersOnly;
+    /*public static ArrayList<TextMessage> chatMessageList;
+    public static ArrayList<TextMessage> numbersOnly;*/
     ListView lv;
     TextView temptxtview;
     MenuAdapter adapter;
 
-    ArrayAdapter arrayAdapter;
-    ArrayAdapter conversationArrayAdapter;
-    ListView smsListView;
-    ArrayList<TextMessage> smsMessagesList = new ArrayList<TextMessage>();
     ArrayList<Conversation> smsConversationList = new ArrayList<Conversation>();
 
 
@@ -75,9 +71,9 @@ public class MainActivity extends Activity {
 
 
 
-        chatMessageList = new ArrayList<TextMessage>();
+        /*chatMessageList = new ArrayList<TextMessage>();
         numbersOnly = new ArrayList<TextMessage>();
-
+*/
 
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -88,7 +84,7 @@ public class MainActivity extends Activity {
             phoneNumber = "5194945387";
 
 
-        chatMessageList.add(new TextMessage(true, "5195207040 In 1", "5195207040", "", 0, 0));
+ /*       chatMessageList.add(new TextMessage(true, "5195207040 In 1", "5195207040", "", 0, 0));
         chatMessageList.add(new TextMessage(false, "5195207040 Out 1"+ phoneNumber.toString(), phoneNumber, "5195207040", "", 0, 0));
         chatMessageList.add(new TextMessage(true, "5195207040 In 2", "5195207040", "", 0, 0));
         chatMessageList.add(new TextMessage(false, "5195207040 Out 2",phoneNumber,"5195207040", "", 0, 0));
@@ -109,11 +105,11 @@ public class MainActivity extends Activity {
         chatMessageList.add(new TextMessage(true, "1234567891 In 1", "1234567891", "", 0, 0));
         chatMessageList.add(new TextMessage(false,"1234567891 Out 1", phoneNumber, "1234567891", "", 0, 0));
         chatMessageList.add(new TextMessage(true, "1234567891 In 2", "1234567891", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"1234567891 Out 2", phoneNumber, "1234567891", "", 0, 0));
+        chatMessageList.add(new TextMessage(false,"1234567891 Out 2", phoneNumber, "1234567891", "", 0, 0));*/
 
         temptxtview = new TextView(this);
 
-        boolean swtch = false;
+/*        boolean swtch = false;
         for(int i = 0 ; i < chatMessageList.size();i++) {
             if(numbersOnly.size()==0)
             {
@@ -136,9 +132,9 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-        }//end sorting if
+        }//end sorting if*/
 
-        adapter = new MenuAdapter(this, numbersOnly);
+        adapter = new MenuAdapter(this, smsConversationList);
 
         lv = (ListView) findViewById(R.id.msgListView);
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -149,13 +145,16 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                String phoneNo = numbersOnly.get(position).getNumber();
+                //String phoneNo = numbersOnly.get(position).getNumber();
+                String phoneNo = smsConversationList.get(position).getPhoneNumber();
+                int threadid = smsConversationList.get(position).getThreadId();
                 //show what number was selected
                 Toast.makeText(getBaseContext(), phoneNo, Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 intent.putExtra("phoneNo", phoneNo);
                 intent.putExtra("MyPhoneno", phoneNumber);
+                intent.putExtra("threadid", threadid);
                 //intent.putExtra("UserPrivateKey" , encryption.privateKey);
                 //DataWrapper dw = new DataWrapper(chatMessageList);
                 //intent.putExtra("data", dw);
@@ -165,12 +164,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        smsListView = (ListView) findViewById(R.id.msgListView);
-
-        arrayAdapter = new ArrayAdapter<TextMessage>(this, android.R.layout.simple_list_item_1, smsMessagesList);
-        conversationArrayAdapter = new ArrayAdapter<Conversation>(this, android.R.layout.simple_list_item_1, smsConversationList);
+        //conversationArrayAdapter = new ArrayAdapter<Conversation>(this, android.R.layout.simple_list_item_1, smsConversationList);
         LoadConversations();
-        LoadConversation(5);
     }
 
     public void LoadConversations()
@@ -189,7 +184,7 @@ public class MainActivity extends Activity {
 
         if ((indexThreadId*indexSnippet*indexMessageCount) < 0 || !smsConversationCursor.moveToFirst()) return;
 
-        conversationArrayAdapter.clear();
+        smsConversationList.clear();
         do {
             Integer thread_id = -1;
             thread_id = smsConversationCursor.getInt(indexThreadId);
@@ -213,7 +208,7 @@ public class MainActivity extends Activity {
                 continue;
             };
 
-            conversationArrayAdapter.add(new Conversation("",
+            smsConversationList.add(new Conversation("",
                     smsInboxCursor.getString(indexAddress),
                     thread_id,
                     smsConversationCursor.getString(indexSnippet),
@@ -222,43 +217,12 @@ public class MainActivity extends Activity {
         } while (smsConversationCursor.moveToNext());
 
     }
-    public void LoadConversation(int threadId)
-    {
-        LoadConversation(threadId, true);
-    }
 
     public String FormattedDate(long timeMillis)
     {
         Date date = new Date(timeMillis);
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
         return format.format(date);
-    }
-
-    public void LoadConversation(int threadId, boolean clear)
-    {
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
-        int indexBody = smsInboxCursor.getColumnIndex(Telephony.Sms.BODY);
-        int indexAddress = smsInboxCursor.getColumnIndex(Telephony.Sms.ADDRESS);
-        int indexDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE);
-        int indexSentDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE_SENT);
-        int indexId = smsInboxCursor.getColumnIndex(Telephony.Sms._ID);
-        int indexType = smsInboxCursor.getColumnIndex(Telephony.Sms.TYPE);
-
-
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        if(clear)
-            arrayAdapter.clear();
-        do {
-            arrayAdapter.add(new TextMessage(
-                    smsInboxCursor.getInt(indexType) == 1,
-                    smsInboxCursor.getString(indexBody),
-                    smsInboxCursor.getString(indexAddress),
-                    FormattedDate(smsInboxCursor.getLong(indexDate)),
-                    threadId,
-                    smsInboxCursor.getInt(indexId)
-            ));
-        } while (smsInboxCursor.moveToNext());
     }
 
     @Override

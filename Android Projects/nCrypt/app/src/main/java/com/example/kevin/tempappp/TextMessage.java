@@ -12,7 +12,6 @@ public class TextMessage  {
     private String date;
     private Integer threadId;
     private Integer id;
-	private String toPhoneNo;
     
     public TextMessage(boolean in, String t , String n, String d, Integer tid, Integer i)  {
         super();
@@ -23,21 +22,6 @@ public class TextMessage  {
         this.threadId = tid;
         this.id = i;
     }
-
-	public TextMessage(boolean in, String t , String n, String ton, String d, Integer tid, Integer i)  {
-        super();
-        this.isIncoming = in;
-        this.text = t;
-        this.number = n;
-        this.date = d;
-        this.threadId = tid;
-        this.id = i;
-		this.toPhoneNo = ton;
-    }
-    
-	public String getToPhoneno(){
-    	return this.toPhoneNo;
-	}
 
     public String getText(){
         return this.text;

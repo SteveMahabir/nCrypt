@@ -4,10 +4,13 @@ package com.example.kevin.tempappp;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChatActivity extends Activity {
@@ -28,6 +33,7 @@ public class ChatActivity extends Activity {
     // Main Encryption Object
     private String IncomingPhoneNumber;
     private String phoneNumber;
+    private int threadid;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMsgs;
     ListView lv;
@@ -44,11 +50,12 @@ public class ChatActivity extends Activity {
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
+        threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
         edtMessage=(EditText)findViewById(R.id.chatLine);
 
 
         chatMsgs = new ArrayList<TextMessage>();
-        for(int i = 0 ; i < MainActivity.chatMessageList.size(); i++)
+        /*for(int i = 0 ; i < MainActivity.chatMessageList.size(); i++)
         {
             //is it incoming?
             if(MainActivity.chatMessageList.get(i).getIsIncoming())
@@ -68,9 +75,10 @@ public class ChatActivity extends Activity {
                     chatMsgs.add(MainActivity.chatMessageList.get(i));
                 }
             }
-        }
+        }*/
         temptxtview = new TextView(this);
 
+        LoadConversation(threadid);
         adapter = new MyAdapter(this, chatMsgs, IncomingPhoneNumber);
 
         lv = (ListView) findViewById(R.id.listView);
@@ -108,10 +116,50 @@ public class ChatActivity extends Activity {
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        chatMsgs.add(new TextMessage(false, msg, phoneNumber, IncomingPhoneNumber, "", 0, 0));
+        //chatMsgs.add(new TextMessage(false, msg, IncomingPhoneNumber, "", 0, 0));
         //String nCryptmsg = encryption.Encrypt(msg);
         sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
     }
+
+    public String FormattedDate(long timeMillis)
+    {
+        Date date = new Date(timeMillis);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
+        return format.format(date);
+    }
+
+    public void LoadConversation(int threadId)
+    {
+        LoadConversation(threadId, true);
+    }
+
+    public void LoadConversation(int threadId, boolean clear)
+    {
+        ContentResolver contentResolver = getContentResolver();
+        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
+        int indexBody = smsInboxCursor.getColumnIndex(Telephony.Sms.BODY);
+        int indexAddress = smsInboxCursor.getColumnIndex(Telephony.Sms.ADDRESS);
+        int indexDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE);
+        int indexSentDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE_SENT);
+        int indexId = smsInboxCursor.getColumnIndex(Telephony.Sms._ID);
+        int indexType = smsInboxCursor.getColumnIndex(Telephony.Sms.TYPE);
+
+
+        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
+        if(clear)
+            chatMsgs.clear();
+        do {
+            chatMsgs.add(new TextMessage(
+                    smsInboxCursor.getInt(indexType) == 1,
+                    smsInboxCursor.getString(indexBody),
+                    smsInboxCursor.getString(indexAddress),
+                    FormattedDate(smsInboxCursor.getLong(indexDate)),
+                    threadId,
+                    smsInboxCursor.getInt(indexId)
+            ));
+        } while (smsInboxCursor.moveToNext());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
