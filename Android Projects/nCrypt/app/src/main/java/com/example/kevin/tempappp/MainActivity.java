@@ -1,6 +1,7 @@
 package com.example.kevin.tempappp;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.TaskStackBuilder;
@@ -52,7 +53,6 @@ public class MainActivity extends Activity {
     // Database Object
     public DBAdapter db;
     public Cursor c;
-
     // Encryption Object
     private Encryption encryption;
 
@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
     Key my_private;
 
     // Globals
-    nCryptApplication globals;
+    public static nCryptApplication globals;
 
 
     @Override
@@ -76,7 +76,6 @@ public class MainActivity extends Activity {
         setupDatabase();
         setupPhoneNumber();
         //setupKeys();
-
 
         /*
         * This is now done in the nCryptApplication class

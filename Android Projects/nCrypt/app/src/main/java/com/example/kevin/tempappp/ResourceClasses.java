@@ -1,8 +1,12 @@
 package com.example.kevin.tempappp;
 
+import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,33 +32,42 @@ final class Resources {
 // Touch listener class for the Press and hold picture event in chat area
 class touchListener implements View.OnTouchListener{
     private TextView textview;
-
-    public touchListener( TextView tv )
+    private TextMessage textMessage;
+    private nCryptApplication globals;
+    private Context context;
+    public touchListener( TextView tv, TextMessage tm, Context con)
     {
         textview = tv;
-
+        textMessage = tm;
+        globals = MainActivity.globals;
+        context = con;
     }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         boolean retVal = false;
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-
             case MotionEvent.ACTION_DOWN:
                 v.setPressed(true);
                 // Start action ...
+                String  message = globals.getEncryption().Decrypt(textMessage.getText());
+                Toast.makeText(context, "DECODED : " + message, Toast.LENGTH_SHORT).show();
+                textview.setText(message);
                 textview.setVisibility(View.VISIBLE);
                 retVal = true;
                 break;
             case MotionEvent.ACTION_CANCEL:
                 v.setPressed(false);
                 // Stop action ...
+                textview.setText("");
                 textview.setVisibility(View.INVISIBLE);
                 retVal = true;
                 break;
             case  MotionEvent.ACTION_UP:
                 v.setPressed(false);
                 // Stop action ...
+                textview.setText("");
                 textview.setVisibility(View.INVISIBLE);
                 retVal = true;
                 break;

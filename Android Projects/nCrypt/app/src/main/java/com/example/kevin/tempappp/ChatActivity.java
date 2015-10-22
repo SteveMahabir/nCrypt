@@ -31,9 +31,9 @@ import java.util.List;
 public class ChatActivity extends Activity {
 
     // Main Encryption Object
-    private String IncomingPhoneNumber;
+    private static String IncomingPhoneNumber;
     private String phoneNumber;
-    private int threadid;
+    private static int threadid;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMsgs;
     ListView lv;
@@ -45,6 +45,15 @@ public class ChatActivity extends Activity {
     // Globals
     nCryptApplication globals;
 
+    public static String GetConversationPhoneNumber()
+    {
+        return IncomingPhoneNumber;
+    }
+
+    public static int GetThreadId()
+    {
+        return threadid;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,10 +102,10 @@ public class ChatActivity extends Activity {
     }
 
 
-    public void sendMsg(String msg, String phone) {
+    public void sendMsg(final String msg) {
 
 
-        String sent = "SMS_SENT";
+        /*String sent = "SMS_SENT";
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
                 new Intent(sent), 0);
 
@@ -107,9 +116,6 @@ public class ChatActivity extends Activity {
                 if (getResultCode() == Activity.RESULT_OK) {
                     //  singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT : Gravity.RIGHT);
 
-                    //This is where we add a sent message!!
-                    lv = (ListView) findViewById(R.id.listView);
-                    lv.setAdapter(adapter);
                     Toast.makeText(getBaseContext(), "SMS sent",
                             Toast.LENGTH_SHORT).show();
                 } else {
@@ -120,9 +126,88 @@ public class ChatActivity extends Activity {
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        //chatMsgs.add(new TextMessage(false, msg, IncomingPhoneNumber, "", 0, 0));
-        //String nCryptmsg = encryption.Encrypt(msg);
-        sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
+
+//        sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
+        sms.sendTextMessage(IncomingPhoneNumber, null, "msg", sentPI, null);
+
+        chatMsgs.add(new TextMessage(false, msg, phoneNumber, Resources.FormattedDate((new Date()).getTime()), threadid, -1));
+*/
+        Context ctx = getBaseContext();
+
+        final String SMS_SEND_ACTION = "CTS_SMS_SEND_ACTION";
+        final String SMS_DELIVERY_ACTION = "CTS_SMS_DELIVERY_ACTION";
+
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        SmsManager sm = SmsManager.getDefault();
+
+        IntentFilter sendIntentFilter = new IntentFilter(SMS_SEND_ACTION);
+        IntentFilter receiveIntentFilter = new IntentFilter(SMS_DELIVERY_ACTION);
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(ctx, 0,new Intent(SMS_SEND_ACTION), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(ctx, 0,new Intent(SMS_DELIVERY_ACTION), 0);
+
+        BroadcastReceiver messageSentReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
+                        chatMsgs.add(new TextMessage(false, msg, IncomingPhoneNumber, Resources.FormattedDate((new Date()).getTime()), threadid, -1));
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(context, "No service", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(context, "Null PDU", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(context, "Radio off", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+
+        registerReceiver(messageSentReceiver, sendIntentFilter);
+
+        BroadcastReceiver messageReceiveReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context arg0, Intent arg1)
+            {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(getBaseContext(), "SMS Delivered",Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getBaseContext(), "SMS Not Delivered", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+
+        registerReceiver(messageReceiveReceiver, receiveIntentFilter);
+
+        ArrayList<String> parts =sm.divideMessage(msg);
+
+        ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
+
+        for (int i = 0; i < parts.size(); i++)
+        {
+            sentIntents.add(PendingIntent.getBroadcast(ctx, 0, new Intent(SMS_SEND_ACTION), 0));
+            deliveryIntents.add(PendingIntent.getBroadcast(ctx, 0, new Intent(SMS_DELIVERY_ACTION), 0));
+        }
+
+        sm.sendMultipartTextMessage(IncomingPhoneNumber,null, parts, sentIntents, deliveryIntents);
     }
 
     public void LoadConversation(int threadId)
@@ -195,11 +280,7 @@ public class ChatActivity extends Activity {
                     message = globals.getEncryption().Encrypt(message);
                     Toast.makeText(getApplicationContext(), "ENCODED : " + message,Toast.LENGTH_SHORT).show();
 
-                    globals.getEncryption().Decrypt();
-                    //message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
-                    //Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
-
-                    sendMsg(message, phoneNumber);
+                    sendMsg(message);
                     edtMessage.setText("");
 
                 }

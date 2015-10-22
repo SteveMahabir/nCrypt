@@ -52,10 +52,11 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
                 msgView = (TextView) rowView.findViewById(R.id.incoming);
                 // 4. Set the text for textView
-                msgView.setText(msgArrayList.get(position).getText());
+                //msgView.setText(msgArrayList.get(position).getText());
+                msgView.setText("");
 
                 //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewIn.setOnTouchListener(new touchListener(msgView));
+                imgViewIn.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
                 msgView.setVisibility(View.INVISIBLE);
             }
             else
@@ -75,10 +76,11 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 msgView = (TextView) rowView.findViewById(R.id.outgoing);
 
                 // 4. Set the text for textView
-                msgView.setText(msgArrayList.get(position).getText());
+                //msgView.setText(msgArrayList.get(position).getText());
+                msgView.setText("");
 
                 //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewOut.setOnTouchListener(new touchListener(msgView));
+                imgViewOut.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
                 msgView.setVisibility(View.INVISIBLE);
            /* }
             else

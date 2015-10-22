@@ -42,25 +42,38 @@ public class MessageReceiver extends BroadcastReceiver {
             recievedMsgs = new SmsMessage[pdus.length];
             int msgIndex = pdus.length - 1;
             TextMessage newMessage = null;
+
+            int threadId = -1;
+
             if (msgIndex >= 0)
             {
+
                 recievedMsgs[msgIndex] = SmsMessage.createFromPdu((byte[])pdus[msgIndex]);
+                String phoneNumber = recievedMsgs[msgIndex].getOriginatingAddress();
+                if(ChatActivity.GetConversationPhoneNumber().replaceAll("[()+-]", "").equalsIgnoreCase(phoneNumber.replaceAll("[()+-]", "")))
+                {
+                    threadId = ChatActivity.GetThreadId();
+                }
+
                 newMessage = new TextMessage(true,
                         recievedMsgs[msgIndex].getMessageBody().toString(),
-                        recievedMsgs[msgIndex].getOriginatingAddress(),
+                        phoneNumber,
                         Resources.FormattedDate(recievedMsgs[msgIndex].getTimestampMillis()),
-                        -1,
+                        threadId,
                         -1
                          );
                 //pulled ""SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + " out of the str but will need for the phone number!!
             }
 
             if (newMessage != null) {
-                //MainActivity.chatMessageList.add(new TextMessage(true, str, nmbr,"", 0, 0));
-
+                if(threadId >= 0) {
+                    //MainActivity.chatMessageList.add(new TextMessage(true, str, nmbr,"", 0, 0));
+                    ChatActivity.chatMsgs.add(newMessage);
+                }
                 showNotification(context, newMessage);
 
                 //Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+
             }
         }
     }
