@@ -94,12 +94,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.whiteskul)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
                 .setSound(soundUri)
-
-                .addAction(R.drawable.icon, "View", pIntent)
+                .addAction(R.drawable.whiteskul, "View", pIntent)
                 .addAction(0, "Remind", pIntent)
 
                 .build();

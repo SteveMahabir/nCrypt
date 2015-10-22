@@ -95,8 +95,8 @@ public class ChatActivity extends Activity {
         adapter = new MyAdapter(this, chatMsgs, IncomingPhoneNumber);
 
         lv = (ListView) findViewById(R.id.listView);
-       // lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
+        lv.setSelection(lv.getAdapter().getCount()-1);
 
 
     }
