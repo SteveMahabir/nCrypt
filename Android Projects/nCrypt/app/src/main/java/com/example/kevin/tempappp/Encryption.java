@@ -111,4 +111,12 @@ public class Encryption {
         }
         return null;
     }
+
+    public boolean isEncrypted(String message){
+        encodedBytes = Base64.decode(message, Base64.DEFAULT);
+
+        
+
+        return true;
+    }
 }
