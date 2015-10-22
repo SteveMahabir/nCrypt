@@ -32,9 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.Key;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.ArrayList;
 
 
@@ -229,18 +226,12 @@ public class MainActivity extends Activity {
                     smsInboxCursor.getString(indexAddress),
                     thread_id,
                     smsConversationCursor.getString(indexSnippet),
-                    smsInboxCursor.getString(indexDate),
-                    smsConversationCursor.getInt(indexMessageCount)));
+                    Resources.FormattedDate(smsInboxCursor.getInt(indexDate)),
+                            smsConversationCursor.getInt(indexMessageCount)));
         } while (smsConversationCursor.moveToNext());
 
     }
 
-    public String FormattedDate(long timeMillis)
-    {
-        Date date = new Date(timeMillis);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-        return format.format(date);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,43 +255,6 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public static void showNotification(Context context){
-
-        // define sound URI, the sound to be played when there's a notification
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Intent intent = new Intent(context, NotificationReceiver.class);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        // this is it, we'll build the notification!
-        // in the addAction method, if you don't want any icon, just set the first param to 0
-        Notification mNotification = new Notification.Builder(context)
-
-                .setContentTitle("New Post!")
-                .setContentText("Here's a new message for you!")
-                .setSmallIcon(R.drawable.icon)
-                .setContentIntent(pIntent)
-                .setSound(soundUri)
-
-                .addAction(R.drawable.icon, "View", pIntent)
-                .addAction(0, "Remind", pIntent)
-
-                .build();
-
-
-        int mId = 1;
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-
-        // If you want to hide the notification after it was selected, do the code below
-        // myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
-        // mId allows you to update the notification later on.
-                notificationManager.notify(mId, mNotification);
-        //notificationManager.notify(0, mNotification);
-    }
-
-
-
 
     public void DisplayContact(Cursor c)
     {

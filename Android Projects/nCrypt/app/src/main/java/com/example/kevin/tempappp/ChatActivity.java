@@ -125,13 +125,6 @@ public class ChatActivity extends Activity {
         sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
     }
 
-    public String FormattedDate(long timeMillis)
-    {
-        Date date = new Date(timeMillis);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-        return format.format(date);
-    }
-
     public void LoadConversation(int threadId)
     {
         LoadConversation(threadId, true);
@@ -158,7 +151,7 @@ public class ChatActivity extends Activity {
                     smsInboxCursor.getInt(indexType) == 1,
                     smsInboxCursor.getString(indexBody),
                     smsInboxCursor.getString(indexAddress),
-                    FormattedDate(smsInboxCursor.getLong(indexDate)),
+                    Resources.FormattedDate(smsInboxCursor.getLong(indexDate)),
                     threadId,
                     smsInboxCursor.getInt(indexId)
             ));

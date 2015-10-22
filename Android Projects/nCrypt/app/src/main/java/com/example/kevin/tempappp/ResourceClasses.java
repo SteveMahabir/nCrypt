@@ -4,10 +4,25 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Nickademus on 10/21/15.
  * This is a place to stuff a bunch of the extras, mostly Listeners and things that we could take out of other code areas
  */
+
+final class Resources {
+
+    private Resources(){};
+    public static String FormattedDate(long timeMillis)
+    {
+        Date date = new Date(timeMillis);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        return format.format(date);
+    }
+}
+
 
 //Class added by Nick
 // Touch listener class for the Press and hold picture event in chat area
