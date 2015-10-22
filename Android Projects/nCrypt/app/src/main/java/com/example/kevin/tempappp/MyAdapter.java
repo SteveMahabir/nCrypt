@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class MyAdapter extends ArrayAdapter<TextMessage> {
 
     private final Context context;
@@ -30,6 +32,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+
         // 1. Create inflater
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,53 +48,35 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
         if(msgArrayList.get(position).getIsIncoming())
         {
-            if(msgArrayList.get(position).getNumber() .equalsIgnoreCase(phoneNo)) {
-                //incoming
-                // 3. Get the text view from the rowView
-                imgViewOut.setVisibility(View.GONE);
+            //incoming
+            // 3. Get the text view from the rowView
+            imgViewOut.setVisibility(View.GONE);
 
-                msgView = (TextView) rowView.findViewById(R.id.incoming);
-                // 4. Set the text for textView
+            msgView = (TextView) rowView.findViewById(R.id.incoming);
+            // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
                 msgView.setText("");
 
-                //create a listening object and giving it the message view. this is to show on a press and hold
+            //create a listening object and giving it the message view. this is to show on a press and hold
                 imgViewIn.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
-                msgView.setVisibility(View.INVISIBLE);
-            }
-            else
-            {
-                msgView = null;
-                rowView = null;
-                imgViewIn.setVisibility(View.GONE);
-                imgViewOut.setVisibility(View.GONE);
-            }
+            msgView.setVisibility(View.INVISIBLE);
+
         }
         else
         {
-            //if(msgArrayList.get(position).getToPhoneno().equalsIgnoreCase(phoneNo)) {
-                //outgoing
-                imgViewIn.setVisibility(View.GONE);
-                // 3. Get the text view from the rowView
-                msgView = (TextView) rowView.findViewById(R.id.outgoing);
+            //outgoing
+            imgViewIn.setVisibility(View.GONE);
+            // 3. Get the text view from the rowView
+            msgView = (TextView) rowView.findViewById(R.id.outgoing);
 
-                // 4. Set the text for textView
+            // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
                 msgView.setText("");
 
-                //create a listening object and giving it the message view. this is to show on a press and hold
+            //create a listening object and giving it the message view. this is to show on a press and hold
                 imgViewOut.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
-                msgView.setVisibility(View.INVISIBLE);
-           /* }
-            else
-            {
-                {
-                    msgView = null;
-                    rowView = null;
-                    imgViewIn.setVisibility(View.GONE);
-                    imgViewOut.setVisibility(View.GONE);
-                }
-            }*/
+            msgView.setVisibility(View.INVISIBLE);
+
         }
 
 

@@ -104,7 +104,6 @@ public class ChatActivity extends Activity {
 
     public void sendMsg(final String msg) {
 
-
         /*String sent = "SMS_SENT";
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
                 new Intent(sent), 0);
