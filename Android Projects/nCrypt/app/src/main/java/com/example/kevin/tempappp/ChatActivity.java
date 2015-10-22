@@ -133,10 +133,11 @@ public class ChatActivity extends Activity {
         LoadConversation(threadId, true);
     }
 
-    public void LoadConversation(int threadId, boolean clear)
+    public void LoadConversation(Integer threadId, boolean clear)
     {
         ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
+        String where = Telephony.Sms.Conversations.THREAD_ID + "=" + threadId.toString();
+        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, where, null, Telephony.Sms.DEFAULT_SORT_ORDER);
         int indexBody = smsInboxCursor.getColumnIndex(Telephony.Sms.BODY);
         int indexAddress = smsInboxCursor.getColumnIndex(Telephony.Sms.ADDRESS);
         int indexDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE);
