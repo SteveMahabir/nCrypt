@@ -43,7 +43,7 @@ public class MenuAdapter extends ArrayAdapter<TextMessage> {
 
 
             // 4. Set the text for textView
-            msgView.setText(phoneNoArrayList.get(position).number);
+            msgView.setText(phoneNoArrayList.get(position).getNumber());
             //set incoming or outgoing
             msgView.setGravity(Gravity.LEFT);
 

@@ -51,10 +51,10 @@ public class ChatActivity extends Activity {
         for(int i = 0 ; i < MainActivity.chatMessageList.size(); i++)
         {
             //is it incoming?
-            if(MainActivity.chatMessageList.get(i).incoming)
+            if(MainActivity.chatMessageList.get(i).getIsIncoming())
             {
                 //if incoming then check the number comin in and the chat incoming #
-                if(MainActivity.chatMessageList.get(i).number.equalsIgnoreCase(IncomingPhoneNumber))
+                if(MainActivity.chatMessageList.get(i).getNumber().equalsIgnoreCase(IncomingPhoneNumber))
                 {
                     chatMsgs.add(MainActivity.chatMessageList.get(i));
                 }
@@ -63,7 +63,7 @@ public class ChatActivity extends Activity {
             else
             {
                 //if outgoing check the tophone # to the chat incoming#
-                if(MainActivity.chatMessageList.get(i).toPhoneNo.equalsIgnoreCase(IncomingPhoneNumber))
+                if(MainActivity.chatMessageList.get(i).getToPhoneno().equalsIgnoreCase(IncomingPhoneNumber))
                 {
                     chatMsgs.add(MainActivity.chatMessageList.get(i));
                 }
@@ -108,7 +108,7 @@ public class ChatActivity extends Activity {
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        chatMsgs.add(new TextMessage(false, msg, phoneNumber, IncomingPhoneNumber));
+        chatMsgs.add(new TextMessage(false, msg, phoneNumber, IncomingPhoneNumber, "", 0, 0));
         //String nCryptmsg = encryption.Encrypt(msg);
         sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
     }

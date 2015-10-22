@@ -43,9 +43,9 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         ImageView imgViewIn = (ImageView) rowView.findViewById(R.id.incomingLogo);
         ImageView imgViewOut = (ImageView) rowView.findViewById(R.id.outgoingLogo);
 
-        if(msgArrayList.get(position).getIncoming())
+        if(msgArrayList.get(position).getIsIncoming())
         {
-            if(msgArrayList.get(position).number .equalsIgnoreCase(phoneNo)) {
+            if(msgArrayList.get(position).getNumber() .equalsIgnoreCase(phoneNo)) {
                 //incoming
                 // 3. Get the text view from the rowView
                 imgViewOut.setVisibility(View.GONE);
@@ -68,7 +68,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         }
         else
         {
-            if(msgArrayList.get(position).toPhoneNo.equalsIgnoreCase(phoneNo)) {
+            if(msgArrayList.get(position).getToPhoneno().equalsIgnoreCase(phoneNo)) {
                 //outgoing
                 imgViewIn.setVisibility(View.GONE);
                 // 3. Get the text view from the rowView
@@ -95,7 +95,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
         if(msgView != null) {
             //set incoming or outgoing
-            msgView.setGravity(msgArrayList.get(position).getIncoming() ? Gravity.LEFT : Gravity.RIGHT);
+            msgView.setGravity(msgArrayList.get(position).getIsIncoming() ? Gravity.LEFT : Gravity.RIGHT);
         }
         // 5. retrn rowView
         return rowView;
