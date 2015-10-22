@@ -78,24 +78,6 @@ public class ChatActivity extends Activity {
         lv.setAdapter(adapter);
 
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                if(chatMsgs.get(position).incoming) {
-                    //this is where we will show the unencrypted messages
-                    TextView tv = null;
-                    View tempLV = ((ViewGroup) view).getChildAt(position);
-
-                    tv = (TextView) tempLV.findViewById(R.id.incoming);
-                    if (tv != null)
-                        tv.setText(chatMsgs.get(position).getText().toString());
-                }
-                //chatMsgs.get(position)
-
-
-            }
-        });
     }
 
 

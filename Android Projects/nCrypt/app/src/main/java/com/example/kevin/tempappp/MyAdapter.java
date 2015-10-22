@@ -52,7 +52,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
                 msgView = (TextView) rowView.findViewById(R.id.incoming);
                 // 4. Set the text for textView
-                msgView.setText("");
+                msgView.setText(msgArrayList.get(position).getText());
 
                 //create a listening object and giving it the message view. this is to show on a press and hold
                 imgViewIn.setOnTouchListener(new touchListener(msgView));
