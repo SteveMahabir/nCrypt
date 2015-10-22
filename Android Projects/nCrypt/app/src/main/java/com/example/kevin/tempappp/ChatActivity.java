@@ -141,7 +141,7 @@ public class ChatActivity extends Activity {
     {
         ContentResolver contentResolver = getContentResolver();
         String where = Telephony.Sms.Conversations.THREAD_ID + "=" + threadId.toString();
-        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, where, null, Telephony.Sms.DEFAULT_SORT_ORDER);
+        Cursor smsInboxCursor = contentResolver.query(Telephony.Sms.CONTENT_URI, null, where, null, "date asc");
         int indexBody = smsInboxCursor.getColumnIndex(Telephony.Sms.BODY);
         int indexAddress = smsInboxCursor.getColumnIndex(Telephony.Sms.ADDRESS);
         int indexDate = smsInboxCursor.getColumnIndex(Telephony.Sms.DATE);
