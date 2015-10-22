@@ -113,10 +113,41 @@ public class Encryption {
     }
 
     public boolean isEncrypted(String message){
-        encodedBytes = Base64.decode(message, Base64.DEFAULT);
 
-        
+        if(message.length() == 175)
+            return true;
+        else
+            return false;
+        /*
+        byte[] encoded = Base64.decode(message, Base64.DEFAULT);
+        byte[] decoded = null;
 
-        return true;
+        String works = "";
+        String doesntwork = "";
+
+        encoded = Base64.decode(message, Base64.DEFAULT);
+
+        try {
+            Cipher c = Cipher.getInstance("RSA");
+            c.init(Cipher.DECRYPT_MODE, publicKey);
+            decoded = c.doFinal(encoded);
+            works = new String(decoded);
+        } catch (Exception e) {
+            Log.e(TAG, "RSA decryption error");
+        }
+
+        try {
+            Cipher c = Cipher.getInstance("RSA");
+            c.init(Cipher.DECRYPT_MODE, privateKey);
+            decoded = c.doFinal(encoded);
+            doesntwork = new String(decoded);
+        } catch (Exception e) {
+            Log.e(TAG, "RSA decryption error");
+        }
+
+        if(works != doesntwork)
+            return false;
+
+        return true;*/
     }
 }
