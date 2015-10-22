@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 recievedMsgs[msgIndex] = SmsMessage.createFromPdu((byte[])pdus[msgIndex]);
                 String phoneNumber = recievedMsgs[msgIndex].getOriginatingAddress();
-                if(ChatActivity.GetConversationPhoneNumber().replaceAll("[()+-]", "").equalsIgnoreCase(phoneNumber.replaceAll("[()+-]", "")))
+                if(ChatActivity.GetConversationPhoneNumber() != null && ChatActivity.GetConversationPhoneNumber().replaceAll("[()+-]", "").equalsIgnoreCase(phoneNumber.replaceAll("[()+-]", "")))
                 {
                     threadId = ChatActivity.GetThreadId();
                 }
@@ -94,7 +95,8 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
-                .setSmallIcon(getNotificationIcon())
+                .setSmallIcon( R.drawable.whiteskul )
+                .setColor(Color.BLACK)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
                 .setSound(soundUri)
@@ -114,8 +116,6 @@ public class MessageReceiver extends BroadcastReceiver {
         notificationManager.notify(mId, mNotification);
         //notificationManager.notify(0, mNotification);
     }
-    private int getNotificationIcon() {
-        boolean whiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
-        return whiteIcon ? R.drawable.whiteskul : R.drawable.whiteskul;
-    }
+
+
 }

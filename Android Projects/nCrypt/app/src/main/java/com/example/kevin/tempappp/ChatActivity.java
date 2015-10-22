@@ -282,6 +282,8 @@ public class ChatActivity extends Activity {
                     sendMsg(message);
                     edtMessage.setText("");
 
+
+
                 }
 
                 /* final EditText message =  (EditText) findViewById(R.id.chatLine);

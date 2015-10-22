@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
-        if(!tm.getLine1Number().isEmpty())
+        if( !tm.getLine1Number().isEmpty())
         phoneNumber = (String)tm.getLine1Number();
         else
             phoneNumber = "5194945387";
