@@ -89,6 +89,22 @@ public class Encryption {
         return new String(decodedBytes);
     }
 
+    public String Decrypt(String encrypted_message) {
+        // Decode the encoded data with RSA public key
+        decodedBytes = null;
+
+        encodedBytes = Base64.decode(encrypted_message, Base64.DEFAULT);
+
+        try {
+            Cipher c = Cipher.getInstance("RSA");
+            c.init(Cipher.DECRYPT_MODE, publicKey);
+            decodedBytes = c.doFinal(encodedBytes);
+        } catch (Exception e) {
+            Log.e(TAG, "RSA decryption error");
+        }
+        return new String(decodedBytes);
+    }
+
     public String DecodedMessage(){
         if (decodedBytes != null) {
             return new String(decodedBytes);
