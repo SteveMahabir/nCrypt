@@ -67,12 +67,12 @@ public class MainActivity extends Activity {
         numbersOnly = new ArrayList<TextMessage>();
 
 
-/*
+
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
-        if(tm.getLine1Number())
+        if(!tm.getLine1Number().isEmpty())
         phoneNumber = (String)tm.getLine1Number();
-        else  */
+        else
             phoneNumber = "5194945387";
 
 
