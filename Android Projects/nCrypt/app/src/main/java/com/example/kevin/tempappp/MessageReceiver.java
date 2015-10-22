@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
@@ -87,11 +89,13 @@ public class MessageReceiver extends BroadcastReceiver {
 
         // this is it, we'll build the notification!
         // in the addAction method, if you don't want any icon, just set the first param to 0
+
         Notification mNotification = new Notification.Builder(context)
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
                 .setSmallIcon(R.drawable.icon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
                 .setSound(soundUri)
 
