@@ -43,7 +43,7 @@ public class ChatActivity extends Activity {
 
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
-        phoneNumber = "5197199890";
+        phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
         edtMessage=(EditText)findViewById(R.id.chatLine);
 
 
@@ -108,7 +108,7 @@ public class ChatActivity extends Activity {
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        chatMsgs.add(new TextMessage(false, msg, phoneNumber));
+        chatMsgs.add(new TextMessage(false, msg, phoneNumber, IncomingPhoneNumber));
         //String nCryptmsg = encryption.Encrypt(msg);
         sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
     }

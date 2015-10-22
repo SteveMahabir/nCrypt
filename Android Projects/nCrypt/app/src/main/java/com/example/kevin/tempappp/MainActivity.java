@@ -143,6 +143,7 @@ public class MainActivity extends Activity {
 
                 Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 intent.putExtra("phoneNo", phoneNo);
+                intent.putExtra("MyPhoneno", phoneNumber);
                 //intent.putExtra("UserPrivateKey" , encryption.privateKey);
                 //DataWrapper dw = new DataWrapper(chatMessageList);
                 //intent.putExtra("data", dw);
