@@ -42,11 +42,15 @@ public class ChatActivity extends Activity {
 
     MyAdapter adapter;
 
+    // Globals
+    nCryptApplication globals;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        globals = ((nCryptApplication)(this.getApplication()));
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
@@ -195,10 +199,10 @@ public class ChatActivity extends Activity {
 
                     //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
-                    message = ((nCryptApplication)this.getApplication()).getEncryption().Encrypt(message);
+                    message = globals.getEncryption().Encrypt(message);
                     Toast.makeText(getApplicationContext(), "ENCODED : " + message,Toast.LENGTH_SHORT).show();
 
-                    ((nCryptApplication)this.getApplication()).getEncryption().Decrypt();
+                    globals.getEncryption().Decrypt();
                     //message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
                     //Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
 

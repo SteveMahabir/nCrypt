@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -153,7 +154,5 @@ public class DBAdapter {
         inputStream.close();
         outputStream.close();
     }
-
-
 
 }

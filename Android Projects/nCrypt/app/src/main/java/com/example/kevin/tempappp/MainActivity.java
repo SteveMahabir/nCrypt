@@ -26,25 +26,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.media.RingtoneManager;
 import android.net.Uri;
-
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
 
-
-
-
-
 public class MainActivity extends Activity {
 
-    // Main Encryption Object
-    Encryption encryption;
-
+    // Our Phone Number!
     private String phoneNumber;
+
     private EditText edtMessage;
     /*public static ArrayList<TextMessage> chatMessageList;
     public static ArrayList<TextMessage> numbersOnly;*/
@@ -54,12 +52,33 @@ public class MainActivity extends Activity {
 
     ArrayList<Conversation> smsConversationList = new ArrayList<Conversation>();
 
+    // Database Object
+    public DBAdapter db;
+    public Cursor c;
+
+    // Encryption Object
+    private Encryption encryption;
+
+    // Public and Private Keys
+    Key my_public;
+    Key my_private;
+
+    // Globals
+    nCryptApplication globals;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        globals = ((nCryptApplication)(this.getApplication()));
+
+        // Setup Database
+        db = new DBAdapter(this);
+        setupDatabase();
+        setupPhoneNumber();
+        //setupKeys();
 
 
         /*
@@ -68,8 +87,6 @@ public class MainActivity extends Activity {
         // Setup and generate new encryption keys
         //encryption = new Encryption(this.getBaseContext());
         //encryption.GenerateKey();
-
-
 
         /*chatMessageList = new ArrayList<TextMessage>();
         numbersOnly = new ArrayList<TextMessage>();
@@ -282,4 +299,75 @@ public class MainActivity extends Activity {
         //notificationManager.notify(0, mNotification);
     }
 
+
+
+
+    public void DisplayContact(Cursor c)
+    {
+        Toast.makeText(this,
+                "id: " + c.getString(0) + "\n" +
+                        "Phone Number: " + c.getString(1) + "\n" +
+                        "Name:   " + c.getString(2) + "\n" +
+                        "Public Key:  " + c.getString(3) + "\n" +
+                        "Private Key:  " + c.getString(4),
+                Toast.LENGTH_LONG).show();
+    }
+
+
+    private void setupPhoneNumber(){
+
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+        if(!tm.getLine1Number().isEmpty())
+            phoneNumber = (String)tm.getLine1Number();
+        else
+            phoneNumber = "5194945387";
+
+    }
+
+    private void setupDatabase()
+    {
+        try {
+            String destPath = "/data/data/" + getPackageName() +
+                    "/databases";
+            File f = new File(destPath);
+            if (!f.exists()) {
+                f.mkdirs();
+                f.createNewFile();
+
+                //---copy the db from the assets folder into
+                // the databases folder---
+
+                db.CopyDB(getBaseContext().getAssets().open("contacts"),
+                        new FileOutputStream(destPath + "/Contacts"));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setupKeys() {
+
+        // Setup and generate new encryption keys
+        encryption = new Encryption(this.getBaseContext());
+        encryption.GenerateKey();
+
+        db.open();
+        c = db.getAllContacts();
+        if (c.moveToFirst())
+        {
+            do {
+                if(c.getString(1) == this.phoneNumber) {
+                    this.my_private = this.encryption.privateKey;
+                    //this.my_private = c.getString(3);
+                    //this.my_public = c.getString(2);
+                }
+            } while (c.moveToNext());
+        }
+        db.close();
+
+    }
 }

@@ -23,8 +23,8 @@ public class Encryption {
     private final Context mContext;
 
     // Generate key pair for 1024-bit RSA encryption and decryption
-    Key publicKey = null;
-    Key privateKey = null;
+    public Key publicKey = null;
+    public Key privateKey = null;
 
     // Encrypted Data
     byte[] encodedBytes;
