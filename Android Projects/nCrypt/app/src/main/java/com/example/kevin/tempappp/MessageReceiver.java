@@ -94,7 +94,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
-                .setSmallIcon(R.drawable.whiteskul)
+                .setSmallIcon(getNotificationIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
                 .setSound(soundUri)
@@ -113,5 +113,9 @@ public class MessageReceiver extends BroadcastReceiver {
         // mId allows you to update the notification later on.
         notificationManager.notify(mId, mNotification);
         //notificationManager.notify(0, mNotification);
+    }
+    private int getNotificationIcon() {
+        boolean whiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return whiteIcon ? R.drawable.whiteskul : R.drawable.whiteskul;
     }
 }
