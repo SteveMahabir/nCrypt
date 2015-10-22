@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,16 +59,39 @@ public class MainActivity extends Activity {
 
         chatMessageList = new ArrayList<TextMessage>();
         numbersOnly = new ArrayList<TextMessage>();
-        phoneNumber = "5194945387";
 
-        chatMessageList.add(new TextMessage(true, "In" ,"4865154865"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
-        chatMessageList.add(new TextMessage(true ,"In", "4865154865"));
-        chatMessageList.add(new TextMessage(false, "Out",phoneNumber));
-        chatMessageList.add(new TextMessage(true, "In", "1234567891"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
-        chatMessageList.add(new TextMessage(true, "In", "1234567891"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
+
+/*
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+        if(tm.getLine1Number())
+        phoneNumber = (String)tm.getLine1Number();
+        else  */
+            phoneNumber = "5194945387";
+
+
+        chatMessageList.add(new TextMessage(true, "5195207040 In 1", "5195207040"));
+        chatMessageList.add(new TextMessage(false, "5195207040 Out 1"+ phoneNumber.toString(), phoneNumber, "5195207040"));
+        chatMessageList.add(new TextMessage(true, "5195207040 In 2", "5195207040"));
+        chatMessageList.add(new TextMessage(false, "5195207040 Out 2",phoneNumber,"5195207040"));
+        chatMessageList.add(new TextMessage(true, "5195207040 In 3" ,"5195207040"));
+        chatMessageList.add(new TextMessage(false,"5195207040 Out 3", phoneNumber,"5195207040"));
+        chatMessageList.add(new TextMessage(true ,"5195207040 In 4", "5195207040"));
+        chatMessageList.add(new TextMessage(false, "5195207040 Out 4",phoneNumber,"5195207040"));
+        chatMessageList.add(new TextMessage(true, "5195207040 In 5" ,"5195207040"));
+        chatMessageList.add(new TextMessage(false,"5195207040 Out 5", phoneNumber,"5195207040"));
+        chatMessageList.add(new TextMessage(true ,"5195207040 In 6", "5195207040"));
+        chatMessageList.add(new TextMessage(false, "5195207040 Out 6",phoneNumber,"5195207040"));
+        chatMessageList.add(new TextMessage(true, "4567891234 In 1", "4567891234"));
+        chatMessageList.add(new TextMessage(false,"4567891234 Out 1", phoneNumber, "4567891234"));
+        chatMessageList.add(new TextMessage(true, "4567891234 In 2", "4567891234"));
+        chatMessageList.add(new TextMessage(false,"4567891234 Out 2", phoneNumber, "4567891234"));
+        chatMessageList.add(new TextMessage(true, "4567891234 In 3", "4567891234"));
+        chatMessageList.add(new TextMessage(false,"4567891234 Out 3", phoneNumber, "4567891234"));
+        chatMessageList.add(new TextMessage(true, "1234567891 In 1", "1234567891"));
+        chatMessageList.add(new TextMessage(false,"1234567891 Out 1", phoneNumber, "1234567891"));
+        chatMessageList.add(new TextMessage(true, "1234567891 In 2", "1234567891"));
+        chatMessageList.add(new TextMessage(false,"1234567891 Out 2", phoneNumber, "1234567891"));
 
         temptxtview = new TextView(this);
 

@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
+    <uses-permission android:name="android.permission.read_phone_state"/>
 
     <application
         android:allowBackup="true"
@@ -31,12 +31,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-
-        <activity
-            android:name=".MainMenu"
-            android:label="@string/title_activity_main_menu" >
-        </activity>
-
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat" >

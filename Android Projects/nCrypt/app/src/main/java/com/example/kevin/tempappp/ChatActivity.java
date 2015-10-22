@@ -12,6 +12,7 @@ import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -29,7 +30,7 @@ public class ChatActivity extends Activity {
     private String IncomingPhoneNumber;
     private String phoneNumber;
     private EditText edtMessage;
-    public static ArrayList<TextMessage> chatMessageList;
+    public static ArrayList<TextMessage> chatMsgs;
     ListView lv;
 
     TextView temptxtview;
@@ -42,41 +43,54 @@ public class ChatActivity extends Activity {
         setContentView(R.layout.activity_chat);
 
 
-
-        //DataWrapper dw =  (DataWrapper) getIntent().getSerializableExtra("data");
-        //chatMessageList = dw.getArray();
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = "5194945387";
         edtMessage=(EditText)findViewById(R.id.chatLine);
 
 
-        chatMessageList = new ArrayList<TextMessage>();
-        chatMessageList.add(new TextMessage(true, "In" ,"4865154865"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
-        chatMessageList.add(new TextMessage(true ,"In", "4865154865"));
-        chatMessageList.add(new TextMessage(false, "Out",phoneNumber));
-        chatMessageList.add(new TextMessage(true, "In", "1234567891"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
-        chatMessageList.add(new TextMessage(true, "In", "1234567891"));
-        chatMessageList.add(new TextMessage(false,"Out", phoneNumber));
-
+        chatMsgs = new ArrayList<TextMessage>();
+        for(int i = 0 ; i < MainActivity.chatMessageList.size(); i++)
+        {
+            //is it incoming?
+            if(MainActivity.chatMessageList.get(i).incoming)
+            {
+                //if incoming then check the number comin in and the chat incoming #
+                if(MainActivity.chatMessageList.get(i).number.equalsIgnoreCase(IncomingPhoneNumber))
+                {
+                    chatMsgs.add(MainActivity.chatMessageList.get(i));
+                }
+            }
+            //outgoing
+            else
+            {
+                //if outgoing check the tophone # to the chat incoming#
+                if(MainActivity.chatMessageList.get(i).toPhoneNo.equalsIgnoreCase(IncomingPhoneNumber))
+                {
+                    chatMsgs.add(MainActivity.chatMessageList.get(i));
+                }
+            }
+        }
         temptxtview = new TextView(this);
 
-        adapter = new MyAdapter(this, chatMessageList);
+        adapter = new MyAdapter(this, chatMsgs, IncomingPhoneNumber);
 
         lv = (ListView) findViewById(R.id.listView);
-        lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+       // lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
-
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
+                //this is where we will show the unencrypted messages
+                TextView tv = null;
+                View tempLV = ((ViewGroup) view).getChildAt(position);
+                tv = (TextView) tempLV.findViewById(R.id.incoming);
+                if(tv != null)
+                tv.setText(chatMsgs.get(position).getText().toString());
 
-
-                //chatMessageList.get(position)
+                //chatMsgs.get(position)
 
 
             }
@@ -92,11 +106,10 @@ public class ChatActivity extends Activity {
                 new Intent(sent), 0);
 
         //---when the SMS has been sent---
-        registerReceiver(new BroadcastReceiver(){
+        registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-                if(getResultCode() == Activity.RESULT_OK)
-                {
+                if (getResultCode() == Activity.RESULT_OK) {
                     //  singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT : Gravity.RIGHT);
 
                     //This is where we add a sent message!!
@@ -104,9 +117,7 @@ public class ChatActivity extends Activity {
                     lv.setAdapter(adapter);
                     Toast.makeText(getBaseContext(), "SMS sent",
                             Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                } else {
                     Toast.makeText(getBaseContext(), "SMS could not send",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -114,8 +125,9 @@ public class ChatActivity extends Activity {
         }, new IntentFilter(sent));
 
         SmsManager sms = SmsManager.getDefault();
-        chatMessageList.add(new TextMessage(false, msg, phoneNumber));
-        sms.sendTextMessage(phone, null, msg, sentPI, null);
+        chatMsgs.add(new TextMessage(false, msg, phoneNumber));
+        //String nCryptmsg = encryption.Encrypt(msg);
+        sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
     }
 
     @Override
