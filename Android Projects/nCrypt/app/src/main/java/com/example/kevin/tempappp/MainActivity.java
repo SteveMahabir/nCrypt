@@ -53,9 +53,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        /*
+        * This is now done in the nCryptApplication class
+        */
         // Setup and generate new encryption keys
-        encryption = new Encryption(this.getBaseContext());
-        encryption.GenerateKey();
+        //encryption = new Encryption(this.getBaseContext());
+        //encryption.GenerateKey();
+
+
 
         chatMessageList = new ArrayList<TextMessage>();
         numbersOnly = new ArrayList<TextMessage>();

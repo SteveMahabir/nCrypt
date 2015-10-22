@@ -49,9 +49,14 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 //incoming
                 // 3. Get the text view from the rowView
                 imgViewOut.setVisibility(View.GONE);
+
                 msgView = (TextView) rowView.findViewById(R.id.incoming);
                 // 4. Set the text for textView
                 msgView.setText("");
+
+                //create a listening object and giving it the message view. this is to show on a press and hold
+                imgViewIn.setOnTouchListener(new touchListener(msgView));
+                msgView.setVisibility(View.INVISIBLE);
             }
             else
             {
@@ -71,6 +76,10 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
                 // 4. Set the text for textView
                 msgView.setText(msgArrayList.get(position).getText());
+
+                //create a listening object and giving it the message view. this is to show on a press and hold
+                imgViewOut.setOnTouchListener(new touchListener(msgView));
+                msgView.setVisibility(View.INVISIBLE);
             }
             else
             {

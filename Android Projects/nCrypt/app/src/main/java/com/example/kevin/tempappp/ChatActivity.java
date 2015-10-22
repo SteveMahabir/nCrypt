@@ -26,7 +26,6 @@ import java.util.List;
 public class ChatActivity extends Activity {
 
     // Main Encryption Object
-    Encryption encryption;
     private String IncomingPhoneNumber;
     private String phoneNumber;
     private EditText edtMessage;
@@ -44,7 +43,7 @@ public class ChatActivity extends Activity {
 
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
-        phoneNumber = "5194945387";
+        phoneNumber = "5197199890";
         edtMessage=(EditText)findViewById(R.id.chatLine);
 
 
@@ -163,11 +162,14 @@ public class ChatActivity extends Activity {
                 if (message != "")
                 {
 
-                    encryption.Encrypt(message);
-                    Toast.makeText(getApplicationContext(), "ENCODED : " + encryption.EncodedMessage(),Toast.LENGTH_SHORT).show();
+                    //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
-                    encryption.Decrypt();
-                    Toast.makeText(getApplicationContext(), "DECODED : " + encryption.DecodedMessage(),Toast.LENGTH_SHORT).show();
+                    message = ((nCryptApplication)this.getApplication()).getEncryption().Encrypt(message);
+                    Toast.makeText(getApplicationContext(), "ENCODED : " + message,Toast.LENGTH_SHORT).show();
+
+                    ((nCryptApplication)this.getApplication()).getEncryption().Decrypt();
+                    //message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
+                    //Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
 
                     sendMsg(message, phoneNumber);
                     edtMessage.setText("");
