@@ -45,6 +45,7 @@ public class Encryption {
     /**
      * String to hold the name of the private key file.
      */
+    //"/src/main/assets""
     public static final String PRIVATE_KEY_FILE = "/storage/emulated/0/private.key";
 
     /**
@@ -98,7 +99,7 @@ public class Encryption {
     public void GenerateKey(){
 
         try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "Steve");
             kpg.initialize(1024);
             KeyPair kp = kpg.genKeyPair();
 
