@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.Key;
@@ -60,16 +61,32 @@ public class Encryption {
     public Encryption(Context context) {
         this.mContext = context;
 
+        try {
+            InputStream is = null;
+            ObjectInputStream os;
+
+            // Get private key
+            is = context.getResources().openRawResource(R.raw.privatekey);
+            os = new ObjectInputStream(is);
+            privateKey = (Key) os.readObject();
+
+            // get public key
+            is = context.getResources().openRawResource(R.raw.publickey);
+            os = new ObjectInputStream(is);
+            publicKey = (Key) os.readObject();
+        }
+        catch(Exception e){e.printStackTrace();}
+/*
         // Check if the pair of keys are present else generate those.
         if (!areKeysPresent()) {
             // Method generates a pair of keys using the RSA algorithm and stores it
             // in their respective files
-            GenerateKey();
+            //GenerateKey();
         }
         else
         {
             // LOAD KEYS
-            /*
+
             try {
                 ObjectInputStream inputStream = null;
                 inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE));
@@ -79,8 +96,9 @@ public class Encryption {
                 privateKey = (Key) inputStream.readObject();
             }
             catch(Exception e) {e.printStackTrace();}
-            */
+
         }
+        */
     }
 
     /**
@@ -128,7 +146,6 @@ public class Encryption {
                     new FileOutputStream(publicKeyFile));
             publicKeyOS.writeObject(kp.getPublic());
             publicKeyOS.close();
-
             // Saving the Private key in a file
             ObjectOutputStream privateKeyOS = new ObjectOutputStream(
                     new FileOutputStream(privateKeyFile));
