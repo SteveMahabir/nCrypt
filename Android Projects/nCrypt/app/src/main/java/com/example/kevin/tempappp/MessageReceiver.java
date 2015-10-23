@@ -24,7 +24,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
     @Override
      public void onReceive(Context context, Intent intent) {
-        // Create service Intent
+        /*// Create service Intent
         Intent serviceIntent = new Intent(context, nCryptService.class);
         // Start service
         context.startService(serviceIntent);
@@ -32,7 +32,7 @@ public class MessageReceiver extends BroadcastReceiver {
         //Start App On Boot Start Up
         Intent App = new Intent(context, MainActivity.class);
         App.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(App);
+        context.startActivity(App);*/
 
         Bundle bundle = intent.getExtras();
         SmsMessage[] recievedMsgs = null;
