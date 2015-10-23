@@ -36,11 +36,11 @@ public class ChatActivity extends Activity {
     private static int threadid;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMsgs;
-    ListView lv;
+    static ListView lv;
 
     TextView temptxtview;
 
-    MyAdapter adapter;
+    static MyAdapter adapter;
 
     // Globals
     nCryptApplication globals;
@@ -96,7 +96,7 @@ public class ChatActivity extends Activity {
 
         lv = (ListView) findViewById(R.id.listView);
         lv.setAdapter(adapter);
-        lv.setSelection(lv.getAdapter().getCount()-1);
+        lv.setSelection(lv.getAdapter().getCount() - 1);
 
 
     }
@@ -146,7 +146,8 @@ public class ChatActivity extends Activity {
 
         PendingIntent sentPI = PendingIntent.getBroadcast(ctx, 0,new Intent(SMS_SEND_ACTION), 0);
         PendingIntent deliveredPI = PendingIntent.getBroadcast(ctx, 0,new Intent(SMS_DELIVERY_ACTION), 0);
-
+        final boolean[] handled = new boolean[1];
+        handled[0] = false;
         BroadcastReceiver messageSentReceiver = new BroadcastReceiver()
         {
             @Override
@@ -155,8 +156,11 @@ public class ChatActivity extends Activity {
                 switch (getResultCode())
                 {
                     case Activity.RESULT_OK:
+                        if (handled[0]) break;
                         Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
                         chatMsgs.add(new TextMessage(false, msg, IncomingPhoneNumber, Resources.FormattedDate((new Date()).getTime()), threadid, -1));
+                        handled[0] = true;
+                        update();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
@@ -206,9 +210,14 @@ public class ChatActivity extends Activity {
             deliveryIntents.add(PendingIntent.getBroadcast(ctx, 0, new Intent(SMS_DELIVERY_ACTION), 0));
         }
 
-        sm.sendMultipartTextMessage(IncomingPhoneNumber,null, parts, sentIntents, deliveryIntents);
+        sm.sendMultipartTextMessage(IncomingPhoneNumber, null, parts, sentIntents, deliveryIntents);
     }
 
+    public static void update()
+    {
+        adapter.notifyDataSetChanged();
+        lv.setSelection(chatMsgs.size() - 1);
+    }
     public void LoadConversation(int threadId)
     {
         LoadConversation(threadId, true);
@@ -277,7 +286,7 @@ public class ChatActivity extends Activity {
                     //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
                     message = globals.getEncryption().Encrypt(message);
-                    Toast.makeText(getApplicationContext(), "ENCODED : " + message,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "SMS ENCODED",Toast.LENGTH_SHORT).show();
 
                     sendMsg(message);
                     edtMessage.setText("");

@@ -47,12 +47,13 @@ class touchListener implements View.OnTouchListener{
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         boolean retVal = false;
+        if(!globals.getEncryption().isEncrypted(textMessage.getText())) return true;
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 v.setPressed(true);
                 // Start action ...
                 String  message = globals.getEncryption().Decrypt(textMessage.getText());
-                Toast.makeText(context, "DECODED : " + message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "SMS DECODED", Toast.LENGTH_SHORT).show();
                 textview.setText(message);
                 textview.setVisibility(View.VISIBLE);
                 retVal = true;

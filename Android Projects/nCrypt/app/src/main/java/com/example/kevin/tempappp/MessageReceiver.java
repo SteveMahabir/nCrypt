@@ -72,6 +72,7 @@ public class MessageReceiver extends BroadcastReceiver {
                 if(threadId >= 0) {
                     //MainActivity.chatMessageList.add(new TextMessage(true, str, nmbr,"", 0, 0));
                     ChatActivity.chatMsgs.add(newMessage);
+                    ChatActivity.update();
                 }
                 showNotification(context, newMessage);
 
@@ -95,7 +96,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
-                .setSmallIcon( R.drawable.whiteskul )
+                .setSmallIcon(R.drawable.whiteskul)
                 .setColor(Color.BLACK)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
