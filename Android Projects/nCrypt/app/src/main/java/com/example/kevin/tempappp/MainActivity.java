@@ -257,7 +257,7 @@ public class MainActivity extends Activity {
         if (c.moveToFirst())
         {
             do {
-                DisplayContact(c);
+                //DisplayContact(c);
             } while (c.moveToNext());
         }
         db.deleteContact(1);
