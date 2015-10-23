@@ -43,30 +43,35 @@ public class MessageReceiver extends BroadcastReceiver {
 
             Object[] pdus = (Object[]) bundle.get("pdus");
             recievedMsgs = new SmsMessage[pdus.length];
-            int msgIndex = pdus.length - 1;
             TextMessage newMessage = null;
-
+            String phoneNumber = "";
+            String msgDate = "";
             int threadId = -1;
 
-            if (msgIndex >= 0)
+            String msg = "";
+            for(int i = 0 ; i < pdus.length; i++)
             {
-
-                recievedMsgs[msgIndex] = SmsMessage.createFromPdu((byte[])pdus[msgIndex]);
-                String phoneNumber = recievedMsgs[msgIndex].getOriginatingAddress();
-                if(ChatActivity.GetConversationPhoneNumber() != null && ChatActivity.GetConversationPhoneNumber().replaceAll("[()+-]", "").equalsIgnoreCase(phoneNumber.replaceAll("[()+-]", "")))
+                recievedMsgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                if (i == 0)
                 {
-                    threadId = ChatActivity.GetThreadId();
+                    phoneNumber = recievedMsgs[i].getOriginatingAddress();
+                    msgDate = Resources.FormattedDate(recievedMsgs[i].getTimestampMillis());
+                    if(ChatActivity.GetConversationPhoneNumber() != null && ChatActivity.GetConversationPhoneNumber().replaceAll("[()+-]", "").equalsIgnoreCase(phoneNumber.replaceAll("[()+-]", "")))
+                    {
+                        threadId = ChatActivity.GetThreadId();
+                    }
                 }
+                msg += recievedMsgs[i].getMessageBody();
 
+            }
+            if (!msg.equals(""))
                 newMessage = new TextMessage(true,
-                        recievedMsgs[msgIndex].getMessageBody().toString(),
+                        msg,
                         phoneNumber,
-                        Resources.FormattedDate(recievedMsgs[msgIndex].getTimestampMillis()),
+                        msgDate,
                         threadId,
                         -1
-                         );
-                //pulled ""SMS from " + recievedMsgs[i].getOriginatingAddress()+ " :" + " out of the str but will need for the phone number!!
-            }
+                );
 
             if (newMessage != null) {
                 if(threadId >= 0) {
@@ -92,12 +97,16 @@ public class MessageReceiver extends BroadcastReceiver {
         // this is it, we'll build the notification!
         // in the addAction method, if you don't want any icon, just set the first param to 0
 
-        //Imperial march vibrate pattern
-        //long[] temp = {500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500};
+        String msgText = "";
+
+        if(MainActivity.globals.getEncryption().isEncrypted(newMessage.getText()))
+            msgText = "Encrypted Message Received";
+        else
+            msgText = newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText();
         Notification mNotification = new Notification.Builder(context)
 
                 .setContentTitle(newMessage.getNumber())
-                .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
+                .setContentText(msgText)
                 .setSmallIcon(R.drawable.whiteskul)
                 //.setVibrate(temp)
                 .setColor(Color.BLACK)
