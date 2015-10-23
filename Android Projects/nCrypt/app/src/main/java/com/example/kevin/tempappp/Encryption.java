@@ -69,7 +69,7 @@ public class Encryption {
         else
         {
             // LOAD KEYS
-            /*
+
             try {
                 ObjectInputStream inputStream = null;
                 inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE));
@@ -79,7 +79,7 @@ public class Encryption {
                 privateKey = (Key) inputStream.readObject();
             }
             catch(Exception e) {e.printStackTrace();}
-            */
+
         }
     }
 
