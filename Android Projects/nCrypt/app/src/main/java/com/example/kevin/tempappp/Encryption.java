@@ -69,6 +69,7 @@ public class Encryption {
         else
         {
             // LOAD KEYS
+            /*
             try {
                 ObjectInputStream inputStream = null;
                 inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE));
@@ -78,6 +79,7 @@ public class Encryption {
                 privateKey = (Key) inputStream.readObject();
             }
             catch(Exception e) {e.printStackTrace();}
+            */
         }
     }
 
@@ -103,9 +105,9 @@ public class Encryption {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(1024);
             KeyPair kp = kpg.genKeyPair();
-            
-            //Uri raw_public_key = Uri.parse("android.resource://com.example.kevin.tempappp/raw/public");
 
+            publicKey = kp.getPublic();
+            privateKey = kp.getPrivate();
 
             File privateKeyFile = new File(PRIVATE_KEY_FILE);
             File publicKeyFile = new File(PUBLIC_KEY_FILE);
@@ -132,9 +134,6 @@ public class Encryption {
                     new FileOutputStream(privateKeyFile));
             privateKeyOS.writeObject(kp.getPrivate());
             privateKeyOS.close();
-
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
 
         }
         catch (Exception e) {
