@@ -19,7 +19,7 @@ public class nCryptApplication extends Application {
         super();
         // Setup and generate new encryption keys
         encryption = new Encryption(this.getBaseContext());
-        encryption.GenerateKey();
+
     }
 
 // Accessors

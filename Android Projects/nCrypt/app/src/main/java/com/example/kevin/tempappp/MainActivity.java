@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.security.Key;
 import java.util.ArrayList;
@@ -52,7 +54,6 @@ public class MainActivity extends Activity {
 
     // Database Object
     public DBAdapter db;
-    public Cursor c;
     // Encryption Object
     private Encryption encryption;
 
@@ -70,82 +71,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         globals = ((nCryptApplication)(this.getApplication()));
+        encryption = globals.getEncryption();
 
-        // Setup Database
-        db = new DBAdapter(this);
         setupDatabase();
         setupPhoneNumber();
         //setupKeys();
 
-        /*
-        * This is now done in the nCryptApplication class
-        */
-        // Setup and generate new encryption keys
-        //encryption = new Encryption(this.getBaseContext());
-        //encryption.GenerateKey();
-
-        /*chatMessageList = new ArrayList<TextMessage>();
-        numbersOnly = new ArrayList<TextMessage>();
-*/
-
-
-        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-
-        if( !tm.getLine1Number().isEmpty())
-        phoneNumber = (String)tm.getLine1Number();
-        else
-            phoneNumber = "5194945387";
-
-
- /*       chatMessageList.add(new TextMessage(true, "5195207040 In 1", "5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false, "5195207040 Out 1"+ phoneNumber.toString(), phoneNumber, "5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "5195207040 In 2", "5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false, "5195207040 Out 2",phoneNumber,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "5195207040 In 3" ,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"5195207040 Out 3", phoneNumber,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true ,"5195207040 In 4", "5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false, "5195207040 Out 4",phoneNumber,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "5195207040 In 5" ,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"5195207040 Out 5", phoneNumber,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true ,"5195207040 In 6", "5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(false, "5195207040 Out 6",phoneNumber,"5195207040", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "4567891234 In 1", "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"4567891234 Out 1", phoneNumber, "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "4567891234 In 2", "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"4567891234 Out 2", phoneNumber, "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "4567891234 In 3", "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"4567891234 Out 3", phoneNumber, "4567891234", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "1234567891 In 1", "1234567891", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"1234567891 Out 1", phoneNumber, "1234567891", "", 0, 0));
-        chatMessageList.add(new TextMessage(true, "1234567891 In 2", "1234567891", "", 0, 0));
-        chatMessageList.add(new TextMessage(false,"1234567891 Out 2", phoneNumber, "1234567891", "", 0, 0));*/
-
         temptxtview = new TextView(this);
-
-/*        boolean swtch = false;
-        for(int i = 0 ; i < chatMessageList.size();i++) {
-            if(numbersOnly.size()==0)
-            {
-                if(chatMessageList.get(i).getIsIncoming()) {
-                    numbersOnly.add(chatMessageList.get(i));
-                }
-            }
-            else {
-                for (int idx = 0; idx < numbersOnly.size(); idx++) {
-                    if (numbersOnly.get(idx).getNumber().equalsIgnoreCase(chatMessageList.get(i).getNumber()))  {
-                        swtch = true;
-                    }
-                }
-                if (swtch == true) {
-                    swtch = false;
-                }
-                else {
-                    if(chatMessageList.get(i).getIsIncoming()) {
-                        numbersOnly.add(chatMessageList.get(i));
-                    }
-                }
-            }
-        }//end sorting if*/
 
         adapter = new MenuAdapter(this, smsConversationList);
 
@@ -257,13 +189,21 @@ public class MainActivity extends Activity {
 
     public void DisplayContact(Cursor c)
     {
+        encryption.privateKey = (Key)DBAdapter.Deserialize(c.getBlob(3));
+        encryption.publicKey = (Key)DBAdapter.Deserialize(c.getBlob(4));
+
+        String message = "Certified";
+        encryption.Encrypt(message);
+
+        message = encryption.Decrypt(encryption.EncodedMessage());
+
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
                         "Phone Number: " + c.getString(1) + "\n" +
                         "Name:   " + c.getString(2) + "\n" +
-                        "Public Key:  " + c.getString(3) + "\n" +
-                        "Private Key:  " + c.getString(4),
+                        "RSA Key Status: " + message,
                 Toast.LENGTH_LONG).show();
+
     }
 
 
@@ -280,9 +220,13 @@ public class MainActivity extends Activity {
 
     private void setupDatabase()
     {
+        db = new DBAdapter(this);
+
         try {
-            String destPath = "/data/data/" + getPackageName() +
-                    "/databases";
+            //String destPath = "/data/data/" + getPackageName() +
+            //        "/databases";
+            String destPath = "/storage/emulated/0/";
+
             File f = new File(destPath);
             if (!f.exists()) {
                 f.mkdirs();
@@ -291,19 +235,51 @@ public class MainActivity extends Activity {
                 //---copy the db from the assets folder into
                 // the databases folder---
 
-                db.CopyDB(getBaseContext().getAssets().open("contacts"),
-                        new FileOutputStream(destPath + "/Contacts"));
+                CopyDB(getBaseContext().getAssets().open("contacts"),
+                        new FileOutputStream(destPath + "/MyDB"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        db.open();
+        long id = db.insertContact("5555555555", "Stan March", encryption.privateKey, encryption.publicKey);
+        id = db.insertContact("0123456789", "Kevin Douag", encryption.privateKey, encryption.publicKey);
+
+        Cursor c;
+        c = db.getAllContacts();
+        if(c == null)
+            return;
+
+        if (c.moveToFirst())
+        {
+            do {
+                DisplayContact(c);
+            } while (c.moveToNext());
+        }
+        db.deleteContact(1);
+        db.deleteContact(2);
+        db.close();
+    }
+
+    public void CopyDB(InputStream inputStream,
+                       OutputStream outputStream) throws IOException {
+        //---copy 1K bytes at a time---
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+        }
+        inputStream.close();
+        outputStream.close();
     }
 
 
     private void setupKeys() {
-
+        Cursor c;
         // Setup and generate new encryption keys
         encryption = new Encryption(this.getBaseContext());
         encryption.GenerateKey();

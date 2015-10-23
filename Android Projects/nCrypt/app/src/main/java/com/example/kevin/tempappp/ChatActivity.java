@@ -289,6 +289,17 @@ public class ChatActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "SMS ENCODED",Toast.LENGTH_SHORT).show();
 
                     sendMsg(message);
+                    //boolean isencrypted;
+                    //isencrypted = globals.getEncryption().isEncrypted(message);
+
+                    //message = globals.getEncryption().Decrypt(message);
+
+                    //isencrypted = globals.getEncryption().isEncrypted(message);
+
+                    //message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
+                    //Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
+
+                    //sendMsg(message, phoneNumber);
                     edtMessage.setText("");
 
 

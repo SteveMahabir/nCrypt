@@ -1,12 +1,21 @@
 package com.example.kevin.tempappp;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PublicKey;
 
 import javax.crypto.Cipher;
 
@@ -32,8 +41,58 @@ public class Encryption {
     // Decrypted Data
     byte[] decodedBytes;
 
+
+    /**
+     * String to hold the name of the private key file.
+     */
+    public static final String PRIVATE_KEY_FILE = "/storage/emulated/0/private.key";
+
+    /**
+     * String to hold name of the public key file.
+     */
+    public static final String PUBLIC_KEY_FILE = "/storage/emulated/0/public.key";
+
+
+    // CONSTRUCTOR
     public Encryption(Context context) {
         this.mContext = context;
+
+        // Check if the pair of keys are present else generate those.
+        if (!areKeysPresent()) {
+            // Method generates a pair of keys using the RSA algorithm and stores it
+            // in their respective files
+            GenerateKey();
+        }
+        else
+        {
+            // LOAD KEYS
+            try {
+                ObjectInputStream inputStream = null;
+                inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE));
+                publicKey = (Key) inputStream.readObject();
+
+                inputStream = new ObjectInputStream(new FileInputStream(PRIVATE_KEY_FILE));
+                privateKey = (Key) inputStream.readObject();
+                }
+        catch(Exception e)
+        {e.printStackTrace();}
+        }
+    }
+
+    /**
+     * The method checks if the pair of public and private key has been generated.
+     *
+     * @return flag indicating if the pair of keys were generated.
+     */
+    public static boolean areKeysPresent() {
+
+        File privateKey = new File(PRIVATE_KEY_FILE);
+        File publicKey = new File(PUBLIC_KEY_FILE);
+
+        if (privateKey.exists() && publicKey.exists()) {
+            return true;
+        }
+        return false;
     }
 
     public void GenerateKey(){
@@ -42,6 +101,33 @@ public class Encryption {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(1024);
             KeyPair kp = kpg.genKeyPair();
+
+            File privateKeyFile = new File(PRIVATE_KEY_FILE);
+            File publicKeyFile = new File(PUBLIC_KEY_FILE);
+
+            // Create files to store public and private key
+            if (privateKeyFile.getParentFile() != null) {
+                privateKeyFile.getParentFile().mkdirs();
+            }
+            privateKeyFile.createNewFile();
+
+            if (publicKeyFile.getParentFile() != null) {
+                publicKeyFile.getParentFile().mkdirs();
+            }
+            publicKeyFile.createNewFile();
+
+            // Saving the Public key in a file
+            ObjectOutputStream publicKeyOS = new ObjectOutputStream(
+                    new FileOutputStream(publicKeyFile));
+            publicKeyOS.writeObject(kp.getPublic());
+            publicKeyOS.close();
+
+            // Saving the Private key in a file
+            ObjectOutputStream privateKeyOS = new ObjectOutputStream(
+                    new FileOutputStream(privateKeyFile));
+            privateKeyOS.writeObject(kp.getPrivate());
+            privateKeyOS.close();
+
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
         }
@@ -113,41 +199,9 @@ public class Encryption {
     }
 
     public boolean isEncrypted(String message){
-
         if(message.length() == 175)
             return true;
         else
             return false;
-        /*
-        byte[] encoded = Base64.decode(message, Base64.DEFAULT);
-        byte[] decoded = null;
-
-        String works = "";
-        String doesntwork = "";
-
-        encoded = Base64.decode(message, Base64.DEFAULT);
-
-        try {
-            Cipher c = Cipher.getInstance("RSA");
-            c.init(Cipher.DECRYPT_MODE, publicKey);
-            decoded = c.doFinal(encoded);
-            works = new String(decoded);
-        } catch (Exception e) {
-            Log.e(TAG, "RSA decryption error");
-        }
-
-        try {
-            Cipher c = Cipher.getInstance("RSA");
-            c.init(Cipher.DECRYPT_MODE, privateKey);
-            decoded = c.doFinal(encoded);
-            doesntwork = new String(decoded);
-        } catch (Exception e) {
-            Log.e(TAG, "RSA decryption error");
-        }
-
-        if(works != doesntwork)
-            return false;
-
-        return true;*/
     }
 }
