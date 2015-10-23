@@ -2,6 +2,7 @@ package com.example.kevin.tempappp;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
@@ -46,6 +47,7 @@ public class Encryption {
      * String to hold the name of the private key file.
      */
     //"/src/main/assets""
+
     public static final String PRIVATE_KEY_FILE = "/storage/emulated/0/private.key";
 
     /**
@@ -74,9 +76,8 @@ public class Encryption {
 
                 inputStream = new ObjectInputStream(new FileInputStream(PRIVATE_KEY_FILE));
                 privateKey = (Key) inputStream.readObject();
-                }
-        catch(Exception e)
-        {e.printStackTrace();}
+            }
+            catch(Exception e) {e.printStackTrace();}
         }
     }
 
@@ -99,9 +100,12 @@ public class Encryption {
     public void GenerateKey(){
 
         try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "Steve");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(1024);
             KeyPair kp = kpg.genKeyPair();
+            
+            //Uri raw_public_key = Uri.parse("android.resource://com.example.kevin.tempappp/raw/public");
+
 
             File privateKeyFile = new File(PRIVATE_KEY_FILE);
             File publicKeyFile = new File(PUBLIC_KEY_FILE);
@@ -131,6 +135,7 @@ public class Encryption {
 
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
+
         }
         catch (Exception e) {
             Log.e(TAG, "RSA key pair error");
