@@ -92,16 +92,19 @@ public class MessageReceiver extends BroadcastReceiver {
         // this is it, we'll build the notification!
         // in the addAction method, if you don't want any icon, just set the first param to 0
 
+        //Imperial march vibrate pattern
+        //long[] temp = {500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500};
         Notification mNotification = new Notification.Builder(context)
 
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText())
                 .setSmallIcon(R.drawable.whiteskul)
+                //.setVibrate(temp)
                 .setColor(Color.BLACK)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)
                 .setSound(soundUri)
-                .addAction(R.drawable.whiteskul, "View", pIntent)
+                .addAction(0, "View", pIntent)
                 .addAction(0, "Remind", pIntent)
 
                 .build();
