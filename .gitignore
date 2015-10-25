@@ -45,3 +45,4 @@ proguard/
 
 # Android Studio captures folder
 captures/
+/Android Projects/nCrypt/*.iml

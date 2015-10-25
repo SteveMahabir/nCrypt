@@ -91,6 +91,8 @@ public class MainActivity extends Activity {
         lv.setOnTouchListener(new touchListener_Contact(smsConversationList, phoneNumber, this));
 
         LoadConversations();
+
+        startService(new Intent(this, nCryptService.class));
     }
 
     public void LoadConversations()
@@ -201,7 +203,7 @@ public class MainActivity extends Activity {
         if(!tm.getLine1Number().isEmpty())
             phoneNumber = (String)tm.getLine1Number();
         else
-            phoneNumber = "5194945387";
+            phoneNumber = "5195202520";
 
     }
 

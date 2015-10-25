@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- <service android:name=".nCryptService" /> -->
+
         </activity>
         <activity
             android:name=".NotificationReceiver"
@@ -52,6 +52,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".nCryptService" />
         <activity
             android:name=".ContactsActivity"
             android:label="@string/title_activity_contacts" >
