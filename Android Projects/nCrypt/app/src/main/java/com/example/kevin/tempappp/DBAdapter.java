@@ -130,19 +130,23 @@ public class DBAdapter {
     //---updates a contact---
     public boolean updateContact(String phoneno, String name, Key public_key)
     {
-        byte[] serialized_public_key;
-        try {
-            serialized_public_key = Serialize(public_key);
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-            return false;
+        ContentValues args = new ContentValues();
+
+        // Public Key Validate
+        if(public_key != null) {
+            byte[] serialized_public_key;
+            try {
+                serialized_public_key = Serialize(public_key);
+                args.put(KEY_PUBLIC, serialized_public_key);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
 
-        ContentValues args = new ContentValues();
         args.put(KEY_PHONENO, phoneno);
         args.put(KEY_NAME, name);
-        args.put(KEY_PUBLIC, serialized_public_key);
+
         return db.update(DATABASE_TABLE, args, KEY_PHONENO + "=" + phoneno, null) > 0;
     }
 

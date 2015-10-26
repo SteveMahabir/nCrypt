@@ -18,13 +18,15 @@ public class MenuAdapter extends ArrayAdapter<Conversation> {
 
     private final Context context;
     private final ArrayList<Conversation> phoneNoArrayList;
+    private final String myPhoneNumber;
 
-    public MenuAdapter(Context context, ArrayList<Conversation> phoneNoArrayList) {
+    public MenuAdapter(Context context, ArrayList<Conversation> phoneNoArrayList, String myPhone) {
 
         super(context, R.layout.row, phoneNoArrayList);
 
         this.context = context;
         this.phoneNoArrayList = phoneNoArrayList;
+        this.myPhoneNumber = myPhone;
 
     }
 
@@ -46,6 +48,17 @@ public class MenuAdapter extends ArrayAdapter<Conversation> {
             msgView.setText(phoneNoArrayList.get(position).getPhoneNumber());
         else
             msgView.setText(phoneNoArrayList.get(position).getName());
+
+        phoneNoArrayList.get(position).getThreadId();
+
+        // 4. Set onTouch Listener
+        msgView.setOnTouchListener(
+                new touchListener_Contact(
+                        phoneNoArrayList.get(position).getName(),
+                        phoneNoArrayList.get(position).getPhoneNumber(),
+                        phoneNoArrayList.get(position).getThreadId(),
+                        myPhoneNumber,
+                        context));
 
         //set incoming or outgoing
         msgView.setGravity(Gravity.LEFT);

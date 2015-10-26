@@ -3,9 +3,11 @@ package com.example.kevin.tempappp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View.OnLongClickListener;
@@ -35,7 +37,6 @@ final class Resources {
     }
 }
 
-
 //Class added by Nick
 // Touch listener class for the Press and hold picture event in chat area
 class touchListener_Image implements View.OnTouchListener{
@@ -53,7 +54,6 @@ class touchListener_Image implements View.OnTouchListener{
         textMessage = tm;
         globals = MainActivity.globals;
         context = con;
-
 
         this.encryption = new Encryption();
         encryption.PrepareKeys();
@@ -110,14 +110,11 @@ class touchListener_Conversation implements AdapterView.OnItemClickListener{
         smsConversationList = _smsConversationList;
         context = con;
         phoneNumber = phoneno;
-
-        this.encryption = new Encryption();
-        encryption.PrepareKeys();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-                               long id) {
+                            long id) {
         //String phoneNo = numbersOnly.get(position).getNumber();
         String phoneNo = smsConversationList.get(position).getPhoneNumber();
         int threadid = smsConversationList.get(position).getThreadId();
@@ -137,57 +134,79 @@ class touchListener_Conversation implements AdapterView.OnItemClickListener{
 
 }
 
-
-
 class touchListener_Contact implements AdapterView.OnTouchListener {
+
+    // Data Members
+    public Context context;
+    private String name;
+    private String friendsNumber;
+    private int threadid;
+    private String myPhoneNumber;
+    private boolean openConversation;
+
+
+    public touchListener_Contact(String _name, String phoneno, int threadno, String myPhoneNo, Context con) {
+        name = _name;
+        context = con;
+        threadid = threadno;
+        friendsNumber = phoneno;
+        openConversation = true;
+        myPhoneNumber = myPhoneNo;
+    }
 
     final Handler handler = new Handler();
 
     Runnable openContactManager = new Runnable() {
         public void run() {
-            String phoneNo = "";
-            int threadid = 0;
-
-            Toast.makeText(context, "THIS IS A LONG TEXT LISTENER", Toast.LENGTH_LONG).show();
-
+            openConversation = false;
             Intent intent = new Intent(context, ContactsActivity.class);
-            intent.putExtra("phoneNo", phoneNo);
-            intent.putExtra("MyPhoneno", phoneNumber);
-            intent.putExtra("threadid", threadid);
+            intent.putExtra("name", name);
+            intent.putExtra("phoneno", friendsNumber);
             //intent.putExtra("UserPrivateKey" , encryption.privateKey);
-
             context.startActivity(intent);
         }
     };
 
-    // Data Members
-    private Context context;
-    private String phoneNumber;
-    private Encryption encryption;
-    ArrayList<Conversation> smsConversationList;
-
-    public touchListener_Contact( ArrayList<Conversation> _smsConversationList, String phoneno, Context con)
-    {
-        smsConversationList = _smsConversationList;
-        context = con;
-        phoneNumber = phoneno;
-
-        this.encryption = new Encryption();
-        encryption.PrepareKeys();
-    }
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        boolean retVal = false;
 
-        // Wait one second
-        if(event.getAction() == MotionEvent.ACTION_DOWN)
-            handler.postDelayed(openContactManager, 1000);
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
-        // Shit shit something happened! StOP EVERYTHING
-        //if((event.getAction() == MotionEvent.ACTION_MOVE)||(event.getAction() == MotionEvent.ACTION_UP))
-        if((event.getAction() == MotionEvent.ACTION_UP))
-            handler.removeCallbacks(openContactManager);
+            // Wait one second
+            case MotionEvent.ACTION_DOWN:
+                handler.postDelayed(openContactManager, 1000);
+                openConversation = true;
+                retVal = true;
+                break;
 
-        return false;
+            // Action Cancelled and Action Move
+            case MotionEvent.ACTION_CANCEL:
+                handler.removeCallbacks(openContactManager);
+                openConversation = false;
+                retVal = true;
+                break;
+
+            // Stop take some time to think,
+            // Gotta make annn importanntt decisionnnn!
+            case MotionEvent.ACTION_UP:
+                handler.removeCallbacks(openContactManager);
+                if (openConversation) {
+                    //show what number was selected
+                    Toast.makeText(context, friendsNumber, Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("phoneNo", friendsNumber);
+                    intent.putExtra("MyPhoneno", myPhoneNumber);
+                    intent.putExtra("threadid", threadid);
+                    //intent.putExtra("UserPrivateKey" , encryption.privateKey);
+                    //DataWrapper dw = new DataWrapper(chatMessageList);
+                    //intent.putExtra("data", dw);
+                    context.startActivity(intent);
+                    retVal = true;
+                }
+                break;
+        }
+        return retVal;
     }
 }

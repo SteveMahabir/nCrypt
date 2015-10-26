@@ -81,14 +81,11 @@ public class MainActivity extends Activity {
 
         temptxtview = new TextView(this);
 
-        adapter = new MenuAdapter(this, smsConversationList);
+        adapter = new MenuAdapter(this, smsConversationList, phoneNumber);
 
         lv = (ListView) findViewById(R.id.msgListView);
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
-
-        lv.setOnItemClickListener(new touchListener_Conversation(smsConversationList, phoneNumber, this));
-        lv.setOnTouchListener(new touchListener_Contact(smsConversationList, phoneNumber, this));
 
         LoadConversations();
 
@@ -138,9 +135,6 @@ public class MainActivity extends Activity {
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
             String friends_name = GetContactName(friends_number);
-            if(friends_name != "") {
-                String temp = "Steve IT WORKED";
-            }
 
             smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
@@ -152,6 +146,17 @@ public class MainActivity extends Activity {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        smsConversationList = new ArrayList<>();
+        LoadConversations();
+        adapter = new MenuAdapter(this, smsConversationList, phoneNumber);
+
+        lv = (ListView) findViewById(R.id.msgListView);
+        lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        lv.setAdapter(adapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
