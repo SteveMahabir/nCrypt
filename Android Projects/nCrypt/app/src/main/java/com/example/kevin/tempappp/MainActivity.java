@@ -1,10 +1,6 @@
 package com.example.kevin.tempappp;
 
 import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.TaskStackBuilder;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,42 +10,30 @@ import android.provider.Telephony;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.telephony.SmsManager;
-import android.content.IntentFilter;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.security.Key;
 import java.util.ArrayList;
-import android.view.View.OnLongClickListener;
 
 public class MainActivity extends Activity {
 
     // Our Phone Number!
     private String phoneNumber;
 
-    // Menu Itms
+    // Menu Items
     ListView lv;
     TextView temptxtview;
     MenuAdapter adapter;
 
     // Main Conversation Listing
-    ArrayList<Conversation> smsConversationList = new ArrayList<Conversation>();
+    ArrayList<Conversation> smsConversationList = new ArrayList<>();
 
     // Database Object
     public DBAdapter db;
@@ -57,13 +41,8 @@ public class MainActivity extends Activity {
     // Encryption Object
     private Encryption encryption;
 
-    // Public and Private Keys
-    Key my_public;
-    Key my_private;
-
     // Globals
     public static nCryptApplication globals;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +70,11 @@ public class MainActivity extends Activity {
 
         startService(new Intent(this, nCryptService.class));
     }
+    //end onCreate
 
     public void LoadConversations()
     {
+
         Integer continueCount = 0;
 
         ContentResolver contentResolver = getContentResolver();
@@ -130,7 +111,7 @@ public class MainActivity extends Activity {
             {
                 continueCount++;
                 continue;
-            };
+            }
 
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
@@ -145,6 +126,7 @@ public class MainActivity extends Activity {
         } while (smsConversationCursor.moveToNext());
 
     }
+    //end LoadConversations
 
     @Override
     public void onResume() {
@@ -157,6 +139,7 @@ public class MainActivity extends Activity {
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
     }
+    //onResume
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +148,7 @@ public class MainActivity extends Activity {
 
         return true;
     }
+    //onCreateOptionsMenu
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -179,8 +163,13 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }//onOptionsItemSelected
 
+
+    /**
+     * Not currently used, for testing porpoises
+     * @param c DB Cursor?
+     */
     public void DisplayContact(Cursor c)
     {
         // Public Key stored as BLOB
@@ -199,7 +188,7 @@ public class MainActivity extends Activity {
                         "Name:   " + c.getString(2) + "\n",
                         //"RSA Key Status: " + raw_message,
                 Toast.LENGTH_LONG).show();
-    }
+    }//end DisplayContact
 
     private void setupPhoneNumber(){
 
@@ -210,7 +199,7 @@ public class MainActivity extends Activity {
         else
             phoneNumber = "5195202520";
 
-    }
+    }//end setupPhoneNumber
 
     private void setupDatabase()
     {
@@ -253,6 +242,7 @@ public class MainActivity extends Activity {
         if (c.moveToFirst())
         {
             do {
+                //TODO This is empty?
                 //DisplayContact(c);
             } while (c.moveToNext());
         }
@@ -261,6 +251,7 @@ public class MainActivity extends Activity {
 
         db.close();
     }
+    //End setupDatabase
 
     public void CopyDB(InputStream inputStream,
                        OutputStream outputStream) throws IOException {
@@ -273,6 +264,7 @@ public class MainActivity extends Activity {
         inputStream.close();
         outputStream.close();
     }
+    //End CopyDB
 
     private String GetContactName(String phoneno) {
         String returnName = "";
@@ -292,6 +284,7 @@ public class MainActivity extends Activity {
         db.close();
         return returnName;
     }
+    //End GetContactName
 
     public void ManageContact(View view) {
         String phoneNo = "";
@@ -303,5 +296,5 @@ public class MainActivity extends Activity {
         //DataWrapper dw = new DataWrapper(chatMessageList);
         //intent.putExtra("data", dw);
         startActivity(intent);
-    }
-}
+    }//end ManageContact
+}//end MainActivity
