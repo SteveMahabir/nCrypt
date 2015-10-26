@@ -31,6 +31,7 @@ import java.util.List;
 public class ChatActivity extends Activity {
 
     // Main Encryption Object
+    private Encryption encryption;
     private static String IncomingPhoneNumber;
     private String phoneNumber;
     private static int threadid;
@@ -54,12 +55,18 @@ public class ChatActivity extends Activity {
     {
         return threadid;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         globals = ((nCryptApplication)(this.getApplication()));
+
+        // Grab the Keys
+        encryption = new Encryption();
+        encryption.PrepareKeys();
+
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
@@ -218,6 +225,7 @@ public class ChatActivity extends Activity {
         adapter.notifyDataSetChanged();
         lv.setSelection(chatMsgs.size() - 1);
     }
+
     public void LoadConversation(int threadId)
     {
         LoadConversation(threadId, true);
@@ -275,47 +283,36 @@ public class ChatActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Send SMS Button
     public void OnClick(View view) {
         switch (view.getId()){
             case R.id.send:
-
-                String message = edtMessage.getText().toString().trim();
-                if (message != "")
+                // Main Sending Logic!
+                String raw_message = edtMessage.getText().toString().trim();
+                if (raw_message != "")
                 {
-
                     //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
-                    message = globals.getEncryption().Encrypt(message);
+                    String encrypted_message = encryption.Encrypt(raw_message);
                     Toast.makeText(getApplicationContext(), "SMS ENCODED",Toast.LENGTH_SHORT).show();
 
-                    sendMsg(message);
-                    //boolean isencrypted;
-                    //isencrypted = globals.getEncryption().isEncrypted(message);
-
-                    //message = globals.getEncryption().Decrypt(message);
-
-                    //isencrypted = globals.getEncryption().isEncrypted(message);
-
-                    //message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
-                    //Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
-
-                    //sendMsg(message, phoneNumber);
+                    sendMsg(encrypted_message);
                     edtMessage.setText("");
 
+                    /* Encryption Testing Area
 
+                    boolean isencrypted;
+                    isencrypted = globals.getEncryption().isEncrypted(message);
 
+                    message = globals.getEncryption().Decrypt(message);
+
+                    isencrypted = globals.getEncryption().isEncrypted(message);
+
+                    message = ((nCryptApplication)this.getApplication()).getEncryption().DecodedMessage();
+                    Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
+
+                    */
                 }
-
-                /* final EditText message =  (EditText) findViewById(R.id.chatLine);
-
-
-                Intent smsintent = new Intent(Intent.ACTION_VIEW);
-                smsintent.putExtra("address", "5194945387");
-                smsintent.putExtra("address", "5194945387");
-                smsintent.putExtra("sms_body",message.getText().toString() );
-                smsintent.setType("vnd.android-dir/mms-sms");
-                startActivity(smsintent); */
-
                 break;
         }
     }

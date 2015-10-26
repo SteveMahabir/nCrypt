@@ -1,13 +1,8 @@
 package com.example.kevin.tempappp;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,13 +11,8 @@ import java.io.ObjectOutputStream;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PublicKey;
 
 import javax.crypto.Cipher;
-
-/**
- * Created by Steve on 2015-10-16.
- */
 
 public class Encryption {
 
@@ -30,85 +20,52 @@ public class Encryption {
     static final String TAG = "EncryptionAlgorithms";
 
     // saving the context for later use
-    private final Context mContext;
+    //private final Context mContext;
 
     // Generate key pair for 1024-bit RSA encryption and decryption
-    public Key publicKey = null;
-    public Key privateKey = null;
+    private Key publicKey = null;
+    private Key privateKey = null;
 
-    // Encrypted Data
+    // Physical Location of Files
+    public static final String PRIVATE_KEY_FILE = "/storage/emulated/0/private.key";
+    public static final String PUBLIC_KEY_FILE = "/storage/emulated/0/public.key";
+    //"/src/main/assets""
+
+    // Encrypted / Decrypted Data
     byte[] encodedBytes;
-
-    // Decrypted Data
     byte[] decodedBytes;
 
 
-    /**
-     * String to hold the name of the private key file.
-     */
-    //"/src/main/assets""
-
-    public static final String PRIVATE_KEY_FILE = "/storage/emulated/0/private.key";
-
-    /**
-     * String to hold name of the public key file.
-     */
-    public static final String PUBLIC_KEY_FILE = "/storage/emulated/0/public.key";
-
-
     // CONSTRUCTOR
-    public Encryption(Context context) {
-        this.mContext = context;
+    public Encryption() {
+    }
 
-        // Check if the pair of keys are present else generate those.
+    // Loads keys from file - Generates new keys if not found
+    public void PrepareKeys() {
+
+        // Check if the pair of keys are present else generate new ones
         if (!areKeysPresent()) {
-            // Method generates a pair of keys using the RSA algorithm and stores it
-            // in their respective files
-            GenerateKey();
+            // generates keys using the RSA algorithm and stores it on file
+            GenerateNewKey();
         }
+
         else
         {
-            // LOAD KEYS
-
             try {
+                // LOAD KEYS FROM FILE
                 ObjectInputStream inputStream = null;
                 inputStream = new ObjectInputStream(new FileInputStream(PUBLIC_KEY_FILE));
-                publicKey = (Key) inputStream.readObject();
+                this.publicKey = (Key) inputStream.readObject();
 
                 inputStream = new ObjectInputStream(new FileInputStream(PRIVATE_KEY_FILE));
-                privateKey = (Key) inputStream.readObject();
+                this.privateKey = (Key) inputStream.readObject();
             }
             catch(Exception e) {e.printStackTrace();}
-
         }
     }
 
-    /**
-     * The method checks if the pair of public and private key has been generated.
-     *
-     * @return flag indicating if the pair of keys were generated.
-     */
-    public static boolean areKeysPresent() {
-
-        File privateKey = new File(PRIVATE_KEY_FILE);
-        File publicKey = new File(PUBLIC_KEY_FILE);
-
-        if (privateKey.exists() && publicKey.exists()) {
-            return true;
-        }
-        return false;
-    }
-
-    public void GenerateKey(){
-
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-            kpg.initialize(1024);
-            KeyPair kp = kpg.genKeyPair();
-
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
-
+    public void SaveKeys(KeyPair kp) {
+        try{
             File privateKeyFile = new File(PRIVATE_KEY_FILE);
             File publicKeyFile = new File(PUBLIC_KEY_FILE);
 
@@ -134,7 +91,22 @@ public class Encryption {
                     new FileOutputStream(privateKeyFile));
             privateKeyOS.writeObject(kp.getPrivate());
             privateKeyOS.close();
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA key pair error");
+        }
+    }
 
+    public void GenerateNewKey(){
+        try {
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(1024);
+            KeyPair kp = kpg.genKeyPair();
+
+            this.publicKey = kp.getPublic();
+            this.privateKey = kp.getPrivate();
+
+            this.SaveKeys(kp);
         }
         catch (Exception e) {
             Log.e(TAG, "RSA key pair error");
@@ -156,30 +128,6 @@ public class Encryption {
         return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
     }
 
-    public String EncodedMessage() {
-        if (encodedBytes != null) {
-            return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
-        }
-        return null;
-    }
-
-    public String Decrypt() {
-        if(encodedBytes == null)
-            return null;
-
-        // Decode the encoded data with RSA public key
-        decodedBytes = null;
-
-        try {
-            Cipher c = Cipher.getInstance("RSA");
-            c.init(Cipher.DECRYPT_MODE, publicKey);
-            decodedBytes = c.doFinal(encodedBytes);
-        } catch (Exception e) {
-            Log.e(TAG, "RSA decryption error");
-        }
-        return new String(decodedBytes);
-    }
-
     public String Decrypt(String encrypted_message) {
         // Decode the encoded data with RSA public key
         decodedBytes = null;
@@ -196,17 +144,49 @@ public class Encryption {
         return new String(decodedBytes);
     }
 
-    public String DecodedMessage(){
-        if (decodedBytes != null) {
-            return new String(decodedBytes);
-        }
-        return null;
-    }
 
+    // Helper Method
     public boolean isEncrypted(String message){
         if(message.length() == 175)
             return true;
         else
             return false;
     }
+    // Helper Method
+    public static boolean areKeysPresent() {
+        File privateKey = new File(PRIVATE_KEY_FILE);
+        File publicKey = new File(PUBLIC_KEY_FILE);
+
+        if (privateKey.exists() && publicKey.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    // Getter sand Setters
+    public Key getPublicKey(){
+        return publicKey;
+    }
+    public void setPublicKey(Key public_key){
+        this.publicKey = public_key;
+    }
+    public Key getPrivateKey(){
+        return privateKey;
+    }
+    public void setPrivateKey(Key private_key){
+        this.privateKey = private_key;
+    }
+
+    // If you just need the  encoded data
+    public byte[] GetEncodedData(){return encodedBytes;}
+    public byte[] GetEncodedData(String input){
+        Encrypt(input);
+        return encodedBytes;
+    }
+
+    // If you just need the decoded data
+    public byte[] GetDecodedData(){return decodedBytes;}
+    public byte[] GetDecodedData(String input){
+        Decrypt(input);
+        return decodedBytes;}
 }

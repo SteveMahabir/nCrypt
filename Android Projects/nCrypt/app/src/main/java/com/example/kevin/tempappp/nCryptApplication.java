@@ -12,20 +12,22 @@ import android.app.Application;
  * Anyway, as you can see in the CTOR im making the Encryption object and setting it up here
  */
 public class nCryptApplication extends Application {
+
 //Internals
     private Encryption encryption;
+
 //CTOR
     public nCryptApplication(){
         super();
         // Setup and generate new encryption keys
-        encryption = new Encryption(this.getBaseContext());
+        //encryption = new Encryption();
 
     }
 
 // Accessors
-    public Encryption getEncryption() {
-        return encryption;
-    }
+    //public Encryption getEncryption() {
+    //    return encryption;
+   // }
 
 
 }

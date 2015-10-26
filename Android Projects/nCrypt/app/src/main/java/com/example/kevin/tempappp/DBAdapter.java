@@ -15,14 +15,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.Key;
 
-/**
- * Created by STAVE on 9/28/2015.
- */
 public class DBAdapter {
     static final String KEY_ROWID = "_id";
     static final String KEY_PHONENO = "phoneno";
     static final String KEY_NAME = "name";
-    static final String KEY_PRIVATE = "private_key";
     static final String KEY_PUBLIC = "public_key";
     static final String TAG = "DBAdapter";
 
@@ -32,7 +28,7 @@ public class DBAdapter {
 
     static final String DATABASE_CREATE =
             "create table contacts (_id integer primary key autoincrement, "
-                    + "phoneno text, name text, private_key blob , public_key blob);";
+                    + "phoneno text, name text, public_key blob);";
 
     final Context context;
 
@@ -87,43 +83,43 @@ public class DBAdapter {
     }
 
     //---insert a contact into the database---
-    public long insertContact(String phone, String name, Key pri, Key pub)
+    public long insertContact(String phone, String name, Key public_key)
     {
-        byte[] private_key;
-        byte[] public_key;
+        byte[] serialized_public_key;
         try {
-            private_key = Serialize(pri);
-            public_key = Serialize(pub);
-        }catch(Exception e){e.printStackTrace();
-        return -1;}
+            serialized_public_key = Serialize(public_key);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            return -1;
+        }
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_PHONENO, phone);
         initialValues.put(KEY_NAME, name);
-        initialValues.put(KEY_PRIVATE, private_key);
-        initialValues.put(KEY_PUBLIC, public_key);
+        initialValues.put(KEY_PUBLIC, serialized_public_key);
         return db.insert(DATABASE_TABLE, null, initialValues);
     }
 
     //---deletes a particular contact---
-    public boolean deleteContact(long rowId)
+    public boolean deleteContact(String phoneno)
     {
-        return db.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
+        return db.delete(DATABASE_TABLE, KEY_PHONENO + "=" + phoneno, null) > 0;
     }
 
     //---retrieves all the contacts---
     public Cursor getAllContacts()
     {
         return db.query(DATABASE_TABLE, new String[]{KEY_ROWID, KEY_PHONENO,
-                KEY_NAME, KEY_PRIVATE, KEY_PUBLIC}, null, null, null, null, null);
+                KEY_NAME, KEY_PUBLIC}, null, null, null, null, null);
     }
 
     //---retrieves a particular contact---
-    public Cursor getContact(long rowId) throws SQLException
+    public Cursor getContactByPhoneNumber(String phoneno) throws SQLException
     {
         Cursor mCursor =
                 db.query(true, DATABASE_TABLE, new String[] {KEY_ROWID,
-                                KEY_PHONENO, KEY_NAME,KEY_PRIVATE, KEY_PUBLIC}, KEY_ROWID + "=" + rowId, null,
+                                KEY_PHONENO, KEY_NAME, KEY_PUBLIC}, KEY_PHONENO + "=" + phoneno, null,
                         null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -132,14 +128,22 @@ public class DBAdapter {
     }
 
     //---updates a contact---
-    public boolean updateContact(long rowId, String phone, String name, String pri, String pub)
+    public boolean updateContact(String phoneno, String name, Key public_key)
     {
+        byte[] serialized_public_key;
+        try {
+            serialized_public_key = Serialize(public_key);
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
         ContentValues args = new ContentValues();
-        args.put(KEY_PHONENO, phone);
+        args.put(KEY_PHONENO, phoneno);
         args.put(KEY_NAME, name);
-        args.put(KEY_PRIVATE, pri);
-        args.put(KEY_PUBLIC, pub);
-        return db.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
+        args.put(KEY_PUBLIC, serialized_public_key);
+        return db.update(DATABASE_TABLE, args, KEY_PHONENO + "=" + phoneno, null) > 0;
     }
 
 

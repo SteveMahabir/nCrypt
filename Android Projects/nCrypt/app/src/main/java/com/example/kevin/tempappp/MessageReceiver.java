@@ -19,7 +19,16 @@ import org.w3c.dom.Text;
 
 public class MessageReceiver extends BroadcastReceiver {
     //MainActivity m;
+
+    // Encryption Object
+    private Encryption encryption;
+
     public MessageReceiver() {
+        // Need to instantiate Encryption object here
+        // because the MessageReciever may run outside of
+        // the main activity.
+        encryption = new Encryption();
+        encryption.PrepareKeys();
     }
 
     @Override
@@ -99,7 +108,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
         String msgText = "";
 
-        if(MainActivity.globals.getEncryption().isEncrypted(newMessage.getText()))
+        if(encryption.isEncrypted(newMessage.getText()))
             msgText = "Encrypted Message Received";
         else
             msgText = newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText();

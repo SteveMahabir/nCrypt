@@ -41,15 +41,16 @@ public class MenuAdapter extends ArrayAdapter<Conversation> {
         TextView msgView;
         msgView = (TextView) rowView.findViewById(R.id.incoming);
 
-
-            // 4. Set the text for textView
+        // 3. Check for name and  set the text for textView
+        if(phoneNoArrayList.get(position).getName().equals(""))
             msgView.setText(phoneNoArrayList.get(position).getPhoneNumber());
-            //set incoming or outgoing
-            msgView.setGravity(Gravity.LEFT);
+        else
+            msgView.setText(phoneNoArrayList.get(position).getName());
 
+        //set incoming or outgoing
+        msgView.setGravity(Gravity.LEFT);
 
-
-        // 5. retrn rowView
+        // 5. return rowView
         return rowView;
 
 

@@ -36,24 +36,24 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.security.Key;
 import java.util.ArrayList;
-
+import android.view.View.OnLongClickListener;
 
 public class MainActivity extends Activity {
 
     // Our Phone Number!
     private String phoneNumber;
 
-    private EditText edtMessage;
-    /*public static ArrayList<TextMessage> chatMessageList;
-    public static ArrayList<TextMessage> numbersOnly;*/
+    // Menu Itms
     ListView lv;
     TextView temptxtview;
     MenuAdapter adapter;
 
+    // Main Conversation Listing
     ArrayList<Conversation> smsConversationList = new ArrayList<Conversation>();
 
     // Database Object
     public DBAdapter db;
+
     // Encryption Object
     private Encryption encryption;
 
@@ -70,12 +70,14 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        globals = ((nCryptApplication)(this.getApplication()));
-        encryption = globals.getEncryption();
 
-        setupDatabase();
+        // Setup and generate new encryption keys
+        encryption = new Encryption();
+        encryption.PrepareKeys();
+
+        // Setup
         setupPhoneNumber();
-        //setupKeys();
+        setupDatabase();
 
         temptxtview = new TextView(this);
 
@@ -85,31 +87,9 @@ public class MainActivity extends Activity {
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
 
+        lv.setOnItemClickListener(new touchListener_Conversation(smsConversationList, phoneNumber, this));
+        lv.setOnTouchListener(new touchListener_Contact(smsConversationList, phoneNumber, this));
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                //String phoneNo = numbersOnly.get(position).getNumber();
-                String phoneNo = smsConversationList.get(position).getPhoneNumber();
-                int threadid = smsConversationList.get(position).getThreadId();
-                //show what number was selected
-                Toast.makeText(getBaseContext(), phoneNo, Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-                intent.putExtra("phoneNo", phoneNo);
-                intent.putExtra("MyPhoneno", phoneNumber);
-                intent.putExtra("threadid", threadid);
-                //intent.putExtra("UserPrivateKey" , encryption.privateKey);
-                //DataWrapper dw = new DataWrapper(chatMessageList);
-                //intent.putExtra("data", dw);
-                startActivity(intent);
-
-
-            }
-        });
-
-        //conversationArrayAdapter = new ArrayAdapter<Conversation>(this, android.R.layout.simple_list_item_1, smsConversationList);
         LoadConversations();
     }
 
@@ -153,7 +133,14 @@ public class MainActivity extends Activity {
                 continue;
             };
 
-            smsConversationList.add(new Conversation("",
+            // Query database for name
+            String friends_number = smsInboxCursor.getString(indexAddress);
+            String friends_name = GetContactName(friends_number);
+            if(friends_name != "") {
+                String temp = "Steve IT WORKED";
+            }
+
+            smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
                     thread_id,
                     smsConversationCursor.getString(indexSnippet),
@@ -189,23 +176,23 @@ public class MainActivity extends Activity {
 
     public void DisplayContact(Cursor c)
     {
-        encryption.privateKey = (Key)DBAdapter.Deserialize(c.getBlob(3));
-        encryption.publicKey = (Key)DBAdapter.Deserialize(c.getBlob(4));
+        // Public Key stored as BLOB
+        Encryption friends_encryption = new Encryption();
+        friends_encryption.setPublicKey((Key) DBAdapter.Deserialize(c.getBlob(3)));
 
-        String message = "Certified";
-        encryption.Encrypt(message);
-
-        message = encryption.Decrypt(encryption.EncodedMessage());
+        /*  Encryption Testing Code
+        String raw_message = "Certified";
+        String encrypted_message = encryption.Encrypt(raw_message);
+        raw_message = encryption.Decrypt(encrypted_message);
+        */
 
         Toast.makeText(this,
                 "id: " + c.getString(0) + "\n" +
                         "Phone Number: " + c.getString(1) + "\n" +
-                        "Name:   " + c.getString(2) + "\n" +
-                        "RSA Key Status: " + message,
+                        "Name:   " + c.getString(2) + "\n",
+                        //"RSA Key Status: " + raw_message,
                 Toast.LENGTH_LONG).show();
-
     }
-
 
     private void setupPhoneNumber(){
 
@@ -246,8 +233,10 @@ public class MainActivity extends Activity {
 
 
         db.open();
-        long id = db.insertContact("5555555555", "Stan March", encryption.privateKey, encryption.publicKey);
-        id = db.insertContact("0123456789", "Kevin Douag", encryption.privateKey, encryption.publicKey);
+        db.insertContact("5195207040", "Steve!", encryption.getPublicKey());
+        db.insertContact("5194945387", "Kevin!", encryption.getPublicKey());
+        db.insertContact("5192819776", "Katrina!", encryption.getPublicKey());
+        db.insertContact("5197199890", "Nick!", encryption.getPublicKey());
 
         Cursor c;
         c = db.getAllContacts();
@@ -260,8 +249,9 @@ public class MainActivity extends Activity {
                 //DisplayContact(c);
             } while (c.moveToNext());
         }
-        db.deleteContact(1);
-        db.deleteContact(2);
+
+        //db.deleteContact("5195207040");
+
         db.close();
     }
 
@@ -277,26 +267,34 @@ public class MainActivity extends Activity {
         outputStream.close();
     }
 
-
-    private void setupKeys() {
+    private String GetContactName(String phoneno) {
+        String returnName = "";
+        // Open Database and Look for Contacts
         Cursor c;
-        // Setup and generate new encryption keys
-        encryption = new Encryption(this.getBaseContext());
-        encryption.GenerateKey();
-
         db.open();
-        c = db.getAllContacts();
-        if (c.moveToFirst())
-        {
-            do {
-                if(c.getString(1) == this.phoneNumber) {
-                    this.my_private = this.encryption.privateKey;
-                    //this.my_private = c.getString(3);
-                    //this.my_public = c.getString(2);
-                }
-            } while (c.moveToNext());
-        }
-        db.close();
+        c = db.getContactByPhoneNumber(phoneno);
 
+        // Name found!
+        if (c.moveToFirst())
+            returnName = c.getString(2);
+
+        // Name not found, Add to Database!
+        else
+            db.insertContact(phoneno, "", null);
+
+        db.close();
+        return returnName;
+    }
+
+    public void ManageContact(View view) {
+        String phoneNo = "";
+
+        Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
+        intent.putExtra("phoneNo", phoneNo);
+        intent.putExtra("MyPhoneno", phoneNumber);
+        //intent.putExtra("UserPrivateKey" , encryption.privateKey);
+        //DataWrapper dw = new DataWrapper(chatMessageList);
+        //intent.putExtra("data", dw);
+        startActivity(intent);
     }
 }

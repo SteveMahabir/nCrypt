@@ -15,12 +15,14 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import javax.crypto.EncryptedPrivateKeyInfo;
+
 public class MyAdapter extends ArrayAdapter<TextMessage> {
 
     private final Context context;
     private final ArrayList<TextMessage> msgArrayList;
     private final String phoneNo;
-
+    private Encryption encryption;
     private nCryptApplication globals;
 
     public MyAdapter(Context context, ArrayList<TextMessage> msgArrayList , String phoneNumber) {
@@ -30,6 +32,8 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         this.context = context;
         this.msgArrayList = msgArrayList;
         this.globals = MainActivity.globals;
+        this.encryption = new Encryption();
+        encryption.PrepareKeys();
     }
 
     @Override
@@ -58,7 +62,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             msgView = (TextView) rowView.findViewById(R.id.incoming);
             // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
-                if(globals.getEncryption().isEncrypted(msgArrayList.get(position).getText())) {
+                if(encryption.isEncrypted(msgArrayList.get(position).getText())) {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
@@ -68,7 +72,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewIn.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
+                imgViewIn.setOnTouchListener(new touchListener_Image(msgView, msgArrayList.get(position), context));
             //msgView.setVisibility(View.INVISIBLE);
 
         }
@@ -81,7 +85,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
             // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
-                if(globals.getEncryption().isEncrypted(msgArrayList.get(position).getText())) {
+                if(encryption.isEncrypted(msgArrayList.get(position).getText())) {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
@@ -91,7 +95,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewOut.setOnTouchListener(new touchListener(msgView, msgArrayList.get(position), context));
+                imgViewOut.setOnTouchListener(new touchListener_Image(msgView, msgArrayList.get(position), context));
             //msgView.setVisibility(View.INVISIBLE);
 
         }
@@ -101,7 +105,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             //set incoming or outgoing
             msgView.setGravity(msgArrayList.get(position).getIsIncoming() ? Gravity.LEFT : Gravity.RIGHT);
         }
-        // 5. retrn rowView
+        // 5. return rowView
         return rowView;
     }
 }
