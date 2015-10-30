@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -17,11 +18,14 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.security.Key;
+
 public class MessageReceiver extends BroadcastReceiver {
     //MainActivity m;
 
     // Encryption Object
     private Encryption encryption;
+    private DBAdapter db;
 
     public MessageReceiver() {
         // Need to instantiate Encryption object here
@@ -32,7 +36,7 @@ public class MessageReceiver extends BroadcastReceiver {
     }
 
     @Override
-     public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         /*// Create service Intent
         Intent serviceIntent = new Intent(context, nCryptService.class);
         // Start service
@@ -73,7 +77,25 @@ public class MessageReceiver extends BroadcastReceiver {
                 msg += recievedMsgs[i].getMessageBody();
 
             }
-            if (!msg.equals(""))
+            if (!msg.equals("")) {
+
+                // Check the message to see if it is hidden data
+                if(encryption.isEncryptedPublicKey(msg))
+                {
+                    Key public_key = encryption.recievePublicKey(msg);
+                    if(public_key != null) {
+                        // Public Key Received! Store in the Database
+                        db = new DBAdapter(context);
+                        db.open();
+                        if(db.updateContact(ChatActivity.GetConversationPhoneNumber(), null, public_key))
+                            Toast.makeText(context, "Encryption Key Received!", Toast.LENGTH_LONG).show();
+                        else
+                            Toast.makeText(context, "Key received, failed to store...", Toast.LENGTH_LONG).show();
+                        db.close();
+                    }
+                    msg = "[Encryption Key Received]";
+                }
+
                 newMessage = new TextMessage(true,
                         msg,
                         phoneNumber,
@@ -81,6 +103,7 @@ public class MessageReceiver extends BroadcastReceiver {
                         threadId,
                         -1
                 );
+            }
 
             if (newMessage != null) {
                 if(threadId >= 0) {
@@ -91,7 +114,6 @@ public class MessageReceiver extends BroadcastReceiver {
                 showNotification(context, newMessage);
 
                 //Toast.makeText(context, str, Toast.LENGTH_LONG).show();
-
             }
         }
     }
@@ -108,7 +130,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
         String msgText = "";
 
-        if(encryption.isEncrypted(newMessage.getText()))
+        if(encryption.isEncryptedMessage(newMessage.getText()))
             msgText = "Encrypted Message Received";
         else
             msgText = newMessage.getText().length() > 30 ? newMessage.getText().substring(0, 30) + "..." : newMessage.getText();
@@ -117,7 +139,7 @@ public class MessageReceiver extends BroadcastReceiver {
                 .setContentTitle(newMessage.getNumber())
                 .setContentText(msgText)
                 .setSmallIcon(R.drawable.whiteskul)
-                //.setVibrate(temp)
+                        //.setVibrate(temp)
                 .setColor(Color.BLACK)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.icon))
                 .setContentIntent(pIntent)

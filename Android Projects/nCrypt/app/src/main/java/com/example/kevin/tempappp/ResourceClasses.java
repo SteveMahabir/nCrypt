@@ -14,6 +14,7 @@ import android.view.View.OnLongClickListener;
 
 import org.w3c.dom.Text;
 
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,13 +48,17 @@ class touchListener_Image implements View.OnTouchListener{
     private nCryptApplication globals;
     private Context context;
     private Encryption encryption;
+    private Key public_key;
 
-    public touchListener_Image( TextView tv, TextMessage tm, Context con)
+    public touchListener_Image(Key decrypting_public_key, TextView tv, TextMessage tm, Context con)
     {
         textview = tv;
         textMessage = tm;
         globals = MainActivity.globals;
         context = con;
+
+        // This public key could be your friends or your own
+        public_key = decrypting_public_key;
 
         this.encryption = new Encryption();
         encryption.PrepareKeys();
@@ -64,15 +69,24 @@ class touchListener_Image implements View.OnTouchListener{
     public boolean onTouch(View v, MotionEvent event) {
         boolean retVal = false;
 
-        if(!encryption.isEncrypted(textMessage.getText())) return true;
+        if(!encryption.isEncryptedMessage(textMessage.getText())) return true;
 
+        // Assume all messages are encrypted then
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 v.setPressed(true);
-                // Start action ...
-                String  message = encryption.Decrypt(textMessage.getText());
-                Toast.makeText(context, "SMS DECODED", Toast.LENGTH_SHORT).show();
-                textview.setText(message);
+                // Start Showing the Message
+                if(public_key != null) {
+                    // If it's yours or your friends message, whatever decrypt anyway
+                    encryption.setPublicKey(public_key);
+                    String message = encryption.Decrypt(textMessage.getText());
+                    Toast.makeText(context, "SMS DECODED", Toast.LENGTH_SHORT).show();
+                    textview.setText(message);
+                }
+                else{
+                    Toast.makeText(context, "Encrypted message cannot be decoded\n(You do not have the decryption key)", Toast.LENGTH_SHORT).show();
+                }
+
                 textview.setVisibility(View.VISIBLE);
                 retVal = true;
                 break;

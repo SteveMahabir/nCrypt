@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,21 +31,27 @@ import java.util.List;
 
 public class ChatActivity extends Activity {
 
-    // Main Encryption Object
-    private Encryption encryption;
+    // Data Members
     private static String IncomingPhoneNumber;
     private String phoneNumber;
     private static int threadid;
     private EditText edtMessage;
     public static ArrayList<TextMessage> chatMsgs;
     static ListView lv;
+    public TextView temptxtview;
 
-    TextView temptxtview;
-
+    // Adapter Object
     static MyAdapter adapter;
 
     // Globals
-    nCryptApplication globals;
+    public nCryptApplication globals;
+
+    // Main Encryption Object
+    private Encryption encryption;
+    private Encryption friends_encryption;
+
+    // Friends Public Key
+    private Key friends_key;
 
     public static String GetConversationPhoneNumber()
     {
@@ -67,6 +74,16 @@ public class ChatActivity extends Activity {
         encryption = new Encryption();
         encryption.PrepareKeys();
 
+        // Look for Friends Public Key in the Database
+        DBAdapter db = new DBAdapter(getBaseContext());
+        db.open();
+        Cursor c = db.getContactByPhoneNumber(IncomingPhoneNumber);
+        db.close();
+
+        // Instantiate the public key from the loaded database
+        friends_encryption = new Encryption();
+        if (c.moveToFirst())
+        friends_encryption.setPublicKey((Key) DBAdapter.Deserialize(c.getBlob(3)));
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
@@ -75,69 +92,19 @@ public class ChatActivity extends Activity {
 
 
         chatMsgs = new ArrayList<TextMessage>();
-        /*for(int i = 0 ; i < MainActivity.chatMessageList.size(); i++)
-        {
-            //is it incoming?
-            if(MainActivity.chatMessageList.get(i).getIsIncoming())
-            {
-                //if incoming then check the number comin in and the chat incoming #
-                if(MainActivity.chatMessageList.get(i).getNumber().equalsIgnoreCase(IncomingPhoneNumber))
-                {
-                    chatMsgs.add(MainActivity.chatMessageList.get(i));
-                }
-            }
-            //outgoing
-            else
-            {
-                //if outgoing check the tophone # to the chat incoming#
-                if(MainActivity.chatMessageList.get(i).getToPhoneno().equalsIgnoreCase(IncomingPhoneNumber))
-                {
-                    chatMsgs.add(MainActivity.chatMessageList.get(i));
-                }
-            }
-        }*/
         temptxtview = new TextView(this);
 
         LoadConversation(threadid);
-        adapter = new MyAdapter(this, chatMsgs, IncomingPhoneNumber);
+        adapter = new MyAdapter(friends_encryption.getPublicKey(), this, chatMsgs, IncomingPhoneNumber);
 
         lv = (ListView) findViewById(R.id.listView);
         lv.setAdapter(adapter);
         lv.setSelection(lv.getAdapter().getCount() - 1);
 
-
     }
 
 
     public void sendMsg(final String msg) {
-
-        /*String sent = "SMS_SENT";
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-                new Intent(sent), 0);
-
-        //---when the SMS has been sent---
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                if (getResultCode() == Activity.RESULT_OK) {
-                    //  singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT : Gravity.RIGHT);
-
-                    Toast.makeText(getBaseContext(), "SMS sent",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getBaseContext(), "SMS could not send",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new IntentFilter(sent));
-
-        SmsManager sms = SmsManager.getDefault();
-
-//        sms.sendTextMessage(IncomingPhoneNumber, null, msg, sentPI, null);
-        sms.sendTextMessage(IncomingPhoneNumber, null, "msg", sentPI, null);
-
-        chatMsgs.add(new TextMessage(false, msg, phoneNumber, Resources.FormattedDate((new Date()).getTime()), threadid, -1));
-*/
         Context ctx = getBaseContext();
 
         final String SMS_SEND_ACTION = "CTS_SMS_SEND_ACTION";
@@ -263,7 +230,7 @@ public class ChatActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_chat, menu);
 
         return true;
     }
@@ -275,8 +242,11 @@ public class ChatActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        // Send the Public Key!
+        if (id == R.id.send_settings) {
+            Toast.makeText(getApplicationContext(), "Successfully Saved!",Toast.LENGTH_LONG).show();
+            String public_key = encryption.sendPublicKey(encryption.getPublicKey());
+            sendMsg(public_key);
             return true;
         }
 

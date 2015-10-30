@@ -144,8 +144,7 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
+        getMenuInflater().inflate(R.menu.menu_chat, menu);
         return true;
     }
     //onCreateOptionsMenu
@@ -158,7 +157,8 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.send) {
+
             return true;
         }
 

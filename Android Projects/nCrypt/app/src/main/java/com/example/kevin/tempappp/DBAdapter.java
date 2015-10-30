@@ -130,9 +130,11 @@ public class DBAdapter {
     //---updates a contact---
     public boolean updateContact(String phoneno, String name, Key public_key)
     {
+        // Must have phone number as it is the primary key
         ContentValues args = new ContentValues();
+        args.put(KEY_PHONENO, phoneno);
 
-        // Public Key Validate
+        // Public Key Null Validation
         if(public_key != null) {
             byte[] serialized_public_key;
             try {
@@ -144,8 +146,8 @@ public class DBAdapter {
             }
         }
 
-        args.put(KEY_PHONENO, phoneno);
-        args.put(KEY_NAME, name);
+        if(name != null)
+            args.put(KEY_NAME, name);
 
         return db.update(DATABASE_TABLE, args, KEY_PHONENO + "=" + phoneno, null) > 0;
     }

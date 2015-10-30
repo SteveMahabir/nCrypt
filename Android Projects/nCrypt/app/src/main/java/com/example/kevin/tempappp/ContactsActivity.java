@@ -2,11 +2,15 @@ package com.example.kevin.tempappp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.security.Key;
 
 public class ContactsActivity extends Activity {
 
@@ -17,6 +21,9 @@ public class ContactsActivity extends Activity {
     // Database Object
     public DBAdapter db;
 
+    // Encryption Object
+    Encryption encryption;
+
     // Edit Text View
     EditText et;
 
@@ -24,27 +31,51 @@ public class ContactsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+        db = new DBAdapter(this);
 
-        // Get Contact Information
+        // Encryption Object
+        encryption = new Encryption();
+        encryption.PrepareKeys();
+
+        // Get Contact Name
         name = String.valueOf(getIntent().getExtras().getString("name"));
         if(name == null)
             name = "";
 
+        // Get Contact Phone Number
         phoneNumber = String.valueOf(getIntent().getExtras().getString("phoneno"));
         if(phoneNumber == null)
             phoneNumber = "";
+        else
+        {
+            db.open();
+            Cursor c = db.getContactByPhoneNumber(phoneNumber);
+            db.close();
+            Encryption friends_encryption = new Encryption();
 
+            CheckBox cb = (CheckBox)findViewById(R.id.checkPublicKey);
+            if (c.moveToFirst())
+                cb.setChecked(true);
+            else
+                cb.setChecked(false);
+
+        }
+
+        // Set Contact Name
         et = (EditText)findViewById(R.id.editTextName);
         et.setText(name);
 
+        // Set Contact Phone Number
         et = (EditText)findViewById(R.id.editTextPhone);
         et.setText(phoneNumber);
 
+        // If friend, set false
         if(!phoneNumber.equals(""))
             et.setEnabled(false);
 
-        // Database Setup
-        db = new DBAdapter(this);
+        if(phoneNumber == null)
+            et.setEnabled(true);
+
     }
 
 

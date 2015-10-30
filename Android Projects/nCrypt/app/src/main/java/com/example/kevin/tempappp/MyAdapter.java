@@ -2,7 +2,10 @@ package com.example.kevin.tempappp;
 
 /**
  * Created by Kevin on 9/28/2015.
- */import java.util.ArrayList;
+ */
+
+import java.security.Key;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -24,8 +27,9 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
     private final String phoneNo;
     private Encryption encryption;
     private nCryptApplication globals;
+    private Key friends_key;
 
-    public MyAdapter(Context context, ArrayList<TextMessage> msgArrayList , String phoneNumber) {
+    public MyAdapter(Key friends_public_key, Context context, ArrayList<TextMessage> msgArrayList , String phoneNumber) {
 
         super(context, R.layout.row, msgArrayList);
         this.phoneNo = phoneNumber;
@@ -33,12 +37,12 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         this.msgArrayList = msgArrayList;
         this.globals = MainActivity.globals;
         this.encryption = new Encryption();
+        this.friends_key = friends_public_key;
         encryption.PrepareKeys();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
 
         // 1. Create inflater
         LayoutInflater inflater = (LayoutInflater) context
@@ -48,7 +52,6 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
         View rowView = inflater.inflate(R.layout.row, parent, false);
 
         TextView msgView = null;
-
 
         ImageView imgViewIn = (ImageView) rowView.findViewById(R.id.incomingLogo);
         ImageView imgViewOut = (ImageView) rowView.findViewById(R.id.outgoingLogo);
@@ -61,8 +64,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
             msgView = (TextView) rowView.findViewById(R.id.incoming);
             // 4. Set the text for textView
-                //msgView.setText(msgArrayList.get(position).getText());
-                if(encryption.isEncrypted(msgArrayList.get(position).getText())) {
+                if(encryption.isEncryptedMessage(msgArrayList.get(position).getText())) {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
@@ -72,7 +74,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewIn.setOnTouchListener(new touchListener_Image(msgView, msgArrayList.get(position), context));
+                imgViewIn.setOnTouchListener(new touchListener_Image(friends_key, msgView, msgArrayList.get(position), context));
             //msgView.setVisibility(View.INVISIBLE);
 
         }
@@ -85,7 +87,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
             // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
-                if(encryption.isEncrypted(msgArrayList.get(position).getText())) {
+                if(encryption.isEncryptedMessage(msgArrayList.get(position).getText())) {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
@@ -95,7 +97,7 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
-                imgViewOut.setOnTouchListener(new touchListener_Image(msgView, msgArrayList.get(position), context));
+                imgViewOut.setOnTouchListener(new touchListener_Image(encryption.getPublicKey(), msgView, msgArrayList.get(position), context));
             //msgView.setVisibility(View.INVISIBLE);
 
         }

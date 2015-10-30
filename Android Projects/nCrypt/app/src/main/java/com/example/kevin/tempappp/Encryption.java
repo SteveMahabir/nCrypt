@@ -131,7 +131,6 @@ public class Encryption {
     public String Decrypt(String encrypted_message) {
         // Decode the encoded data with RSA public key
         decodedBytes = null;
-
         encodedBytes = Base64.decode(encrypted_message, Base64.DEFAULT);
 
         try {
@@ -146,12 +145,22 @@ public class Encryption {
 
 
     // Helper Method
-    public boolean isEncrypted(String message){
+    public boolean isEncryptedMessage(String message){
         if(message.length() == 175)
             return true;
         else
             return false;
     }
+
+    // Helper Method
+    public boolean isEncryptedPublicKey(String message){
+        if(message.length() == 539)
+            return true;
+        else
+            return false;
+    }
+
+
     // Helper Method
     public static boolean areKeysPresent() {
         File privateKey = new File(PRIVATE_KEY_FILE);
@@ -162,6 +171,44 @@ public class Encryption {
         }
         return false;
     }
+
+    // Used for Sending a Public Key
+    public String sendPublicKey(Key public_key)
+    {
+        try {
+            // Serialize the Key into a byte[]
+            byte[] serialized_public_key = DBAdapter.Serialize(public_key);
+            // Encode the byte[] into String
+            String serialized_public_key_text = Base64.encodeToString(serialized_public_key, Base64.DEFAULT);
+            // Text the String to a person
+            return serialized_public_key_text;
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA encryption error");
+        }
+
+        return "";
+    }
+
+    public Key recievePublicKey(String serialized_public_key_text)
+    {
+        try{
+            // Decode the string into a byte[]
+            byte[] serialized_public_key = Base64.decode(serialized_public_key_text, Base64.DEFAULT);
+            // Deserialize the byte[] into a Key
+            Key public_key = (Key) DBAdapter.Deserialize(serialized_public_key);
+
+            return public_key;
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA encryption error");
+        }
+
+        return null;
+    }
+
+
+
 
     // Getter sand Setters
     public Key getPublicKey(){
