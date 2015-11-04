@@ -12,11 +12,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -88,8 +91,35 @@ public class ChatActivity extends Activity {
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
         threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
+        final Button button = (Button)findViewById(R.id.send);
         edtMessage=(EditText)findViewById(R.id.chatLine);
+        edtMessage.addTextChangedListener(new TextWatcher() {
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(s.toString().trim().length()==0){
+                    button.setEnabled(false);
+                } else {
+                    button.setEnabled(true);
+                }
+
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
         chatMsgs = new ArrayList<TextMessage>();
         temptxtview = new TextView(this);
