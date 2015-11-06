@@ -28,6 +28,19 @@
             android:layout_weight="9"
             android:orientation="horizontal">
 
+            <Button
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:text="Send"
+                android:id="@+id/sendPlain"
+                android:singleLine="true"
+                android:background="#00FF00"
+                android:elegantTextHeight="false"
+                android:clickable="true"
+                android:layout_weight=".1"
+                android:gravity="center_vertical|center_horizontal"
+                android:onClick="OnClick" />
+
             <EditText
                 android:id="@+id/chatLine"
                 android:layout_width="0dip"
@@ -52,7 +65,8 @@
                 android:clickable="true"
                 android:layout_weight=".1"
                 android:gravity="center_vertical|center_horizontal"
-                android:onClick="OnClick" />
+                android:onClick="OnClick"
+                android:layout_marginLeft="10dp" />
 
         </LinearLayout>
 

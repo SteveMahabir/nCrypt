@@ -94,6 +94,7 @@ public class MessageReceiver extends BroadcastReceiver {
                         db.close();
                     }
                     msg = "[Encryption Key Received]";
+
                 }
 
                 newMessage = new TextMessage(true,
@@ -103,6 +104,7 @@ public class MessageReceiver extends BroadcastReceiver {
                         threadId,
                         -1
                 );
+
             }
 
             if (newMessage != null) {
@@ -160,6 +162,5 @@ public class MessageReceiver extends BroadcastReceiver {
         notificationManager.notify(mId, mNotification);
         //notificationManager.notify(0, mNotification);
     }
-
 
 }
