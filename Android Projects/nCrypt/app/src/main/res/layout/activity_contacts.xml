@@ -6,7 +6,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.kevin.tempappp.ContactsActivity"
-    android:background="@color/purple"
+    android:background="@drawable/chatbg_gradient"
     >
 
     <TextView
@@ -16,7 +16,8 @@
         android:text="Contact Management"
         android:id="@+id/msgTitle"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="@color/white" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -28,7 +29,9 @@
         android:layout_below="@+id/msgTitle"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:hint="Contact Name" />
+        android:hint="Contact Name"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,7 +44,9 @@
         android:layout_marginTop="44dp"
         android:layout_alignParentEnd="true"
         android:text="Phone:"
-        android:hint="Phone Number" />
+        android:hint="Phone Number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -54,7 +59,9 @@
         android:layout_alignEnd="@+id/editTextPhone"
         android:checked="false"
         android:enabled="true"
-        android:clickable="false" />
+        android:clickable="false"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white" />
 
     <Button
         android:layout_width="wrap_content"
@@ -64,7 +71,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/checkPublicKey"
-        android:background="#4B0050"
-        android:onClick="onClickEvent" />
+        android:background="@color/purple"
+        android:onClick="onClickEvent"
+        android:textColor="@color/white" />
 
 </RelativeLayout>
