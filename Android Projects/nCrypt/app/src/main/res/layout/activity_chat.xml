@@ -24,7 +24,8 @@
         <ImageButton
             android:layout_width="75dp"
             android:layout_height="50dp"
-            android:id="@+id/btn_Sendcryt"
+            android:id="@+id/send"
+            android:onClick="OnClick"
             android:src="@drawable/sendcrypt"
             android:scaleType="fitXY"
             android:background="#00000000"
@@ -36,7 +37,8 @@
         <ImageButton
             android:layout_width="75dp"
             android:layout_height="50dp"
-            android:id="@+id/btn_Sendplain"
+            android:id="@+id/sendPlain"
+            android:onClick="OnClick"
             android:src="@drawable/sendplain"
             android:scaleType="fitXY"
             android:background="#00000000"
@@ -59,11 +61,11 @@
             android:layout_height="wrap_content"
             android:text="Send\nPlain"
             android:id="@+id/textView"
-            android:layout_toRightOf="@+id/btn_Sendplain"
+            android:layout_toRightOf="@+id/sendPlain"
             android:textAlignment="gravity"
             android:gravity="left"
             android:layout_alignParentBottom="false"
-            android:layout_alignBottom="@+id/btn_Sendplain"
+            android:layout_alignBottom="@+id/sendPlain"
             android:textColor="@color/white" />
 
         <TextView
@@ -73,22 +75,9 @@
             android:id="@+id/textView2"
             android:textAlignment="gravity"
             android:gravity="right"
-            android:layout_toLeftOf="@+id/btn_Sendcryt"
-            android:layout_alignBottom="@+id/btn_Sendcryt"
+            android:layout_toLeftOf="@+id/send"
+            android:layout_alignBottom="@+id/send"
             android:textColor="@color/white" />
-
-        <Button
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:text="Send"
-            android:id="@+id/sendPlain"
-            android:singleLine="true"
-            android:background="#00FF00"
-            android:elegantTextHeight="false"
-            android:clickable="true"
-            android:layout_weight=".1"
-            android:gravity="center_vertical|center_horizontal"
-            android:onClick="OnClick" />
 
         <EditText
             android:id="@+id/chatLine"
@@ -105,19 +94,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp" />
 
-        <Button
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:text="Send"
-            android:id="@+id/send"
-            android:singleLine="true"
-            android:background="#00FF00"
-            android:elegantTextHeight="false"
-            android:clickable="true"
-            android:layout_weight=".1"
-            android:gravity="center_vertical|center_horizontal"
-            android:onClick="OnClick"
-            android:layout_marginLeft="10dp" />
+
     </RelativeLayout>
 
 
