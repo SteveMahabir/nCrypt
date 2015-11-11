@@ -6,17 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.security.Key;
 
@@ -25,7 +21,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
     // Encryption Object
     private Encryption encryption;
-    private DBAdapter db;
+    private DatabaseHelper db;
 
     public MessageReceiver() {
         // Need to instantiate Encryption object here
@@ -85,8 +81,8 @@ public class MessageReceiver extends BroadcastReceiver {
                     Key public_key = encryption.recievePublicKey(msg);
                     if(public_key != null) {
                         // Public Key Received! Store in the Database
-                        db = new DBAdapter(context);
-                        db.open();
+                        db = new DatabaseHelper(context);
+
                         if(db.updateContact(ChatActivity.GetConversationPhoneNumber(), null, public_key))
                             Toast.makeText(context, "Encryption Key Received!", Toast.LENGTH_LONG).show();
                         else

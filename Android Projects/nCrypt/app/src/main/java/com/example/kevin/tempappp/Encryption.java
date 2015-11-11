@@ -1,6 +1,5 @@
 package com.example.kevin.tempappp;
 
-import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 import java.io.File;
@@ -177,7 +176,7 @@ public class Encryption {
     {
         try {
             // Serialize the Key into a byte[]
-            byte[] serialized_public_key = DBAdapter.Serialize(public_key);
+            byte[] serialized_public_key = DatabaseHelper.Serialize(public_key);
             // Encode the byte[] into String
             String serialized_public_key_text = Base64.encodeToString(serialized_public_key, Base64.DEFAULT);
             // Text the String to a person
@@ -196,7 +195,7 @@ public class Encryption {
             // Decode the string into a byte[]
             byte[] serialized_public_key = Base64.decode(serialized_public_key_text, Base64.DEFAULT);
             // Deserialize the byte[] into a Key
-            Key public_key = (Key) DBAdapter.Deserialize(serialized_public_key);
+            Key public_key = (Key) DatabaseHelper.Deserialize(serialized_public_key);
 
             return public_key;
         }

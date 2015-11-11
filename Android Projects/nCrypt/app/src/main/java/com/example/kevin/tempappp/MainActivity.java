@@ -34,9 +34,9 @@ public class MainActivity extends Activity {
 
     // Main Conversation Listing
     ArrayList<Conversation> smsConversationList = new ArrayList<>();
-
+    ArrayList<Integer> deletedThreads = new ArrayList<>();
     // Database Object
-    public DBAdapter db;
+    public DatabaseHelper db;
 
     // Encryption Object
     private Encryption encryption;
@@ -66,15 +66,53 @@ public class MainActivity extends Activity {
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
 
+        //DeleteThread(74); //debug only
+
         LoadConversations();
 
         startService(new Intent(this, nCryptService.class));
     }
     //end onCreate
 
+    public void GetDeletedThreads()
+    {
+        deletedThreads.clear();
+        Cursor c;
+        c = db.getAllDeletedThreads();
+        if(c == null)
+            return;
+
+        if (c.moveToFirst())
+        {
+            do {
+                deletedThreads.add(c.getInt(0));
+            } while (c.moveToNext());
+        }
+
+        db.close();
+    }
+
+    public boolean isDeleted(Integer thread_id)
+    {
+        return deletedThreads.contains(thread_id);
+    }
+
+    /*
+     * returns true if delete was successful,
+     * LoadConversations should be called after this function
+     */
+    public boolean DeleteThread(Integer thread_id)
+    {
+        long rowsDeleted = db.insertDeletedThread(thread_id);
+
+        db.close();
+
+        return rowsDeleted > 0;
+    }
+
     public void LoadConversations()
     {
-
+        GetDeletedThreads();
         Integer continueCount = 0;
 
         ContentResolver contentResolver = getContentResolver();
@@ -93,7 +131,7 @@ public class MainActivity extends Activity {
         do {
             Integer thread_id = -1;
             thread_id = smsConversationCursor.getInt(indexThreadId);
-            if (thread_id < 0) return;
+            if (thread_id < 0 || isDeleted(thread_id)) continue;
             String where = Telephony.Sms.Conversations.THREAD_ID + "=" + thread_id.toString();
             Cursor smsInboxCursor = getContentResolver().query(Telephony.Sms.Inbox.CONTENT_URI,
                     new String[]{Telephony.Sms.Inbox.ADDRESS,
@@ -115,7 +153,7 @@ public class MainActivity extends Activity {
 
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
-            String friends_name = GetContactName(friends_number);
+            String friends_name = friends_number;//GetContactName(friends_number);
 
             smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
@@ -175,7 +213,7 @@ public class MainActivity extends Activity {
     {
         // Public Key stored as BLOB
         Encryption friends_encryption = new Encryption();
-        friends_encryption.setPublicKey((Key) DBAdapter.Deserialize(c.getBlob(3)));
+        friends_encryption.setPublicKey((Key) DatabaseHelper.Deserialize(c.getBlob(3)));
 
         /*  Encryption Testing Code
         String raw_message = "Certified";
@@ -204,7 +242,7 @@ public class MainActivity extends Activity {
 
     private void setupDatabase()
     {
-        db = new DBAdapter(this);
+        db = new DatabaseHelper(this);
 
         try {
             //String destPath = "/data/data/" + getPackageName() +
@@ -229,7 +267,6 @@ public class MainActivity extends Activity {
         }
 
 
-        db.open();
         db.insertContact("5195207040", "Steve!", encryption.getPublicKey());
         db.insertContact("5194945387", "Kevin!", encryption.getPublicKey());
         db.insertContact("5192819776", "Katrina!", encryption.getPublicKey());
@@ -271,7 +308,6 @@ public class MainActivity extends Activity {
         String returnName = "";
         // Open Database and Look for Contacts
         Cursor c;
-        db.open();
         c = db.getContactByPhoneNumber(phoneno);
 
         // Name found!

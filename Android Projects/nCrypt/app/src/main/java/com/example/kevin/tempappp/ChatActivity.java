@@ -17,8 +17,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,10 +26,8 @@ import android.widget.Toast;
 
 
 import java.security.Key;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ChatActivity extends Activity {
 
@@ -43,6 +39,7 @@ public class ChatActivity extends Activity {
     public static ArrayList<TextMessage> chatMsgs;
     static ListView lv;
     public TextView temptxtview;
+    ArrayList<Integer> deletedMessages = new ArrayList<>();
 
     // Adapter Object
     static MyAdapter adapter;
@@ -79,15 +76,15 @@ public class ChatActivity extends Activity {
         encryption.PrepareKeys();
 
         // Look for Friends Public Key in the Database
-        DBAdapter db = new DBAdapter(getBaseContext());
-        db.open();
+        DatabaseHelper db = new DatabaseHelper(getBaseContext());
+
         Cursor c = db.getContactByPhoneNumber(IncomingPhoneNumber);
         db.close();
 
         // Instantiate the public key from the loaded database
         friends_encryption = new Encryption();
         if (c.moveToFirst())
-        friends_encryption.setPublicKey((Key) DBAdapter.Deserialize(c.getBlob(3)));
+        friends_encryption.setPublicKey((Key) DatabaseHelper.Deserialize(c.getBlob(3)));
 
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
@@ -125,6 +122,7 @@ public class ChatActivity extends Activity {
         chatMsgs = new ArrayList<TextMessage>();
         temptxtview = new TextView(this);
 
+        db.close();
         LoadConversation(threadid);
         adapter = new MyAdapter(friends_encryption.getPublicKey(), this, chatMsgs, IncomingPhoneNumber);
 
@@ -134,6 +132,45 @@ public class ChatActivity extends Activity {
 
     }
 
+    public void GetDeletedMessages(Integer thread_id)
+    {
+        deletedMessages.clear();
+        DatabaseHelper db = new DatabaseHelper(getBaseContext());
+
+        Cursor c;
+        c = db.getDeletedMessagesByThreadId(thread_id);
+        if(c == null)
+            return;
+
+        if (c.moveToFirst())
+        {
+            do {
+                deletedMessages.add(c.getInt(0));
+            } while (c.moveToNext());
+        }
+
+        db.close();
+    }
+
+    public boolean isDeleted(Integer message_id)
+    {
+        return deletedMessages.contains(message_id);
+    }
+
+    /*
+     * returns true if delete was successful,
+     * LoadConversations should be called after this function
+     */
+    public boolean DeleteMessage(Integer thread_id, Integer message_id)
+    {
+        DatabaseHelper db = new DatabaseHelper(getBaseContext());
+
+        long rowsDeleted = db.insertDeletedMessage(thread_id, message_id);
+
+        db.close();
+
+        return rowsDeleted > 0;
+    }
 
     public void sendMsg(final String msg) {
         Context ctx = getBaseContext();
@@ -241,18 +278,22 @@ public class ChatActivity extends Activity {
         int indexId = smsInboxCursor.getColumnIndex(Telephony.Sms._ID);
         int indexType = smsInboxCursor.getColumnIndex(Telephony.Sms.TYPE);
 
-
+        GetDeletedMessages(threadId);
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         if(clear)
             chatMsgs.clear();
         do {
+            Integer messageId = smsInboxCursor.getInt(indexId);
+
+            if (isDeleted( messageId)) continue;
+
             chatMsgs.add(new TextMessage(
                     smsInboxCursor.getInt(indexType) == 1,
                     smsInboxCursor.getString(indexBody),
                     smsInboxCursor.getString(indexAddress),
                     Resources.FormattedDate(smsInboxCursor.getLong(indexDate)),
                     threadId,
-                    smsInboxCursor.getInt(indexId)
+                    messageId
             ));
         } while (smsInboxCursor.moveToNext());
     }
@@ -286,16 +327,16 @@ public class ChatActivity extends Activity {
 
     // Send SMS Button
     public void OnClick(View view) {
-        switch (view.getId()){
-            case R.id.send:
-                // Main Sending Logic!
-                String raw_message = edtMessage.getText().toString().trim();
-                if (raw_message != "")
-                {
+        String raw_message = edtMessage.getText().toString().trim();
+        if (raw_message != "") {
+            switch (view.getId()) {
+                case R.id.send:
+                    // Main Sending Logic!
+
                     //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
                     String encrypted_message = encryption.Encrypt(raw_message);
-                    Toast.makeText(getApplicationContext(), "SMS ENCODED",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "SMS ENCODED", Toast.LENGTH_SHORT).show();
 
                     sendMsg(encrypted_message);
                     edtMessage.setText("");
@@ -313,8 +354,13 @@ public class ChatActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "DECODED : " + message,Toast.LENGTH_SHORT).show();
 
                     */
-                }
-                break;
+
+                    break;
+                case R.id.sendPlain:
+                    sendMsg(raw_message);
+                    edtMessage.setText("");
+                    break;
+            }
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.example.kevin.tempappp;
 
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Activity;
@@ -11,8 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.security.Key;
-
 public class ContactsActivity extends Activity {
 
     // Contact Info
@@ -21,7 +17,7 @@ public class ContactsActivity extends Activity {
     int Threadid;
 
     // Database Object
-    public DBAdapter db;
+    public DatabaseHelper db;
 
     // Encryption Object
     Encryption encryption;
@@ -33,7 +29,7 @@ public class ContactsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        db = new DBAdapter(this);
+        db = new DatabaseHelper(this);
 
         // Encryption Object
         encryption = new Encryption();
@@ -53,7 +49,7 @@ public class ContactsActivity extends Activity {
             phoneNumber = "";
         else
         {
-            db.open();
+
             Cursor c = db.getContactByPhoneNumber(phoneNumber);
             db.close();
             Encryption friends_encryption = new Encryption();
@@ -89,7 +85,7 @@ public class ContactsActivity extends Activity {
         {
             case(R.id.buttonUpdate):
                 if(infoValidated()) {
-                    db.open();
+
                     if(db.updateContact(phoneNumber, name, null)) {
                         db.close();
                         Toast.makeText(this, "Success, " + name +  " Updated!", Toast.LENGTH_LONG).show();
