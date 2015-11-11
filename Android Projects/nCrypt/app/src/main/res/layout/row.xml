@@ -5,15 +5,15 @@
     android:background="@drawable/chatrow_bg">
 
     <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/incomingLogo"
         android:src="@drawable/logo2"
         android:layout_alignParentLeft="true"/>
 
     <ImageView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/outgoingLogo"
         android:src="@drawable/hdpi"
         android:layout_alignParentRight="true"/>
