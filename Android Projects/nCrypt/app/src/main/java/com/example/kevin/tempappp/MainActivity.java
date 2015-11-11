@@ -131,9 +131,10 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
         smsConversationList = new ArrayList<>();
         LoadConversations();
-        adapter = new MenuAdapter(this, smsConversationList, phoneNumber);
+        adapter = new MenuAdapter(MainActivity.this , smsConversationList, phoneNumber);
 
         lv = (ListView) findViewById(R.id.msgListView);
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);

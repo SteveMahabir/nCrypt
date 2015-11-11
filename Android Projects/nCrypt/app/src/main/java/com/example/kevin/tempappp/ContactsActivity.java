@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Activity;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ public class ContactsActivity extends Activity {
     // Contact Info
     String phoneNumber;
     String name;
+    int Threadid;
 
     // Database Object
     public DBAdapter db;
@@ -41,6 +43,9 @@ public class ContactsActivity extends Activity {
         name = String.valueOf(getIntent().getExtras().getString("name"));
         if(name == null)
             name = "";
+
+        Threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
+
 
         // Get Contact Phone Number
         phoneNumber = String.valueOf(getIntent().getExtras().getString("phoneno"));
@@ -100,6 +105,21 @@ public class ContactsActivity extends Activity {
                     return;
                 }
                 break;
+            case(R.id.buttonChat):
+                TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                String phoneNumber;
+                if(!tm.getLine1Number().isEmpty())
+                    phoneNumber = (String)tm.getLine1Number();
+                else
+                    phoneNumber = "5195202520";
+
+                Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
+                intent.putExtra("phoneNo", phoneNumber);
+                intent.putExtra("MyPhoneno", phoneNumber);
+                intent.putExtra("threadid", Threadid);
+                startActivity(intent);
+                break;
+
         }
     }
 

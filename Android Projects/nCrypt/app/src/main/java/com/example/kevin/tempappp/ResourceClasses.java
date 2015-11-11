@@ -339,6 +339,7 @@ class touchListener_Contact implements AdapterView.OnTouchListener {
             Intent intent = new Intent(context, ContactsActivity.class);
             intent.putExtra("name", name);
             intent.putExtra("phoneno", friendsNumber);
+            intent.putExtra("threadid", threadid);
             //intent.putExtra("UserPrivateKey" , encryption.privateKey);
             context.startActivity(intent);
         }
