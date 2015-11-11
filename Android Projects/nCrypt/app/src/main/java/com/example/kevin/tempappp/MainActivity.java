@@ -157,11 +157,9 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.send) {
-
+        if (id == R.id.action_settings) {
             startActivity( new Intent( MainActivity.this, IconPopup.class));
             return true;
-
         }
 
         return super.onOptionsItemSelected(item);

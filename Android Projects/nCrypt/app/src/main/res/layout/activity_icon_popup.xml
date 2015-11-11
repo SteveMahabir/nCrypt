@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:spinnerMode="dropdown"
+        android:entries="@array/colours"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_colourPicker"
+        android:layout_gravity="center_horizontal" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rb_glow"
+            android:checked="true"
+            android:layout_margin="10dp"
+            android:onClick="RbuttonOnclick"
+            android:background="#00ff00" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rb_eyes"
+            android:checked="false"
+            android:layout_margin="10dp"
+            android:onClick="RbuttonOnclick" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rb_flat"
+            android:checked="false"
+            android:layout_margin="10dp"
+            android:onClick="RbuttonOnclick" />
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/button_save"
+        android:layout_gravity="center_horizontal"
+        android:onClick="SaveButtonSave" />
+
+</LinearLayout>

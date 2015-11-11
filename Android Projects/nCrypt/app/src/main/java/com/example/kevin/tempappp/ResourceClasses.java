@@ -2,6 +2,8 @@ package com.example.kevin.tempappp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.view.MotionEvent;
@@ -25,6 +27,25 @@ import java.util.Date;
  * This is a place to stuff a bunch of the extras, mostly Listeners and things that we could take out of other code areas
  */
 
+enum SkullColour{
+    Pueple,
+    DarkRed,
+    Pink,
+    Red,
+    Orange,
+    Yellow,
+    Green,
+    Cyan,
+    Aqua,
+    Blue
+}
+
+enum SkullType{
+    Eyes,
+    Glow,
+    Flat
+}
+
 final class Resources {
 
     private Resources(){
@@ -38,8 +59,9 @@ final class Resources {
         return format.format(date);
     }
 
-    public static int GetSkullFromEnum( SkullColour skullour, SkullType skullType  ){
+    public static Bitmap GetSkullFromEnum( SkullColour skullour, SkullType skullType, Context con  ){
         int image = (R.drawable.purplering);
+        Bitmap bmp = BitmapFactory.decodeResource( con.getResources(), image  );
 
         switch ( skullour ) {
             case Pueple:
@@ -175,7 +197,7 @@ final class Resources {
                 }
                 break;
         }//end switch
-        return image;
+        return bmp = BitmapFactory.decodeResource( con.getResources(), image  );
     }// end GetSkullFromEnum
 }
 
