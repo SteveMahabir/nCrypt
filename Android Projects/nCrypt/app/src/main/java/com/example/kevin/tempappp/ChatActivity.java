@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,7 +92,7 @@ public class ChatActivity extends Activity {
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
         threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
-        final Button button = (Button)findViewById(R.id.send);
+        final ImageButton button = (ImageButton)findViewById(R.id.send);
         edtMessage=(EditText)findViewById(R.id.chatLine);
         edtMessage.addTextChangedListener(new TextWatcher() {
 
