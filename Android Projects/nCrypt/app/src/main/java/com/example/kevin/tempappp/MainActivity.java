@@ -133,12 +133,12 @@ public class MainActivity extends Activity {
         super.onResume();
 
         smsConversationList = new ArrayList<>();
-        LoadConversations();
         adapter = new MenuAdapter(MainActivity.this , smsConversationList, phoneNumber);
-
+        LoadConversations();
         lv = (ListView) findViewById(R.id.msgListView);
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
+
     }
     //onResume
 
@@ -277,7 +277,6 @@ public class MainActivity extends Activity {
         // Name found!
         if (c.moveToFirst())
             returnName = c.getString(2);
-
         // Name not found, Add to Database!
         else
             db.insertContact(phoneno, "", null);
@@ -289,13 +288,9 @@ public class MainActivity extends Activity {
 
     public void ManageContact(View view) {
         String phoneNo = "";
-
         Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
         intent.putExtra("phoneNo", phoneNo);
         intent.putExtra("MyPhoneno", phoneNumber);
-        //intent.putExtra("UserPrivateKey" , encryption.privateKey);
-        //DataWrapper dw = new DataWrapper(chatMessageList);
-        //intent.putExtra("data", dw);
         startActivity(intent);
     }//end ManageContact
 }//end MainActivity

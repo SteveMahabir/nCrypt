@@ -104,6 +104,12 @@ public class ContactsActivity extends Activity {
                     Toast.makeText(this, "Please fill in Name and Number", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                Intent mainmenuint = new Intent(ContactsActivity.this, MainActivity.class);
+
+                startActivity(mainmenuint);
+
+
                 break;
             case(R.id.buttonChat):
                 TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
