@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Change Icon"
+        android:id="@+id/textView3"
+        android:textSize="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
 
     <Spinner
         android:spinnerMode="dropdown"
@@ -9,13 +22,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner_colourPicker"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="20dp"
+        android:layout_alignTop="@+id/textView3" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/spinner_colourPicker"
+        android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_gravity="center_horizontal">
+        android:layout_alignWithParentIfMissing="false">
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -49,6 +70,46 @@
         android:text="@string/save"
         android:id="@+id/button_save"
         android:layout_gravity="center_horizontal"
-        android:onClick="SaveButtonSave" />
+        android:onClick="SaveButtonSave"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Message Expiry Date"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/spinner_colourPicker"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Days:"
+        android:id="@+id/daystv"
+        android:layout_gravity="center_horizontal"
+        android:textSize="15dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@+id/button_save" />
+
+    <EditText
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:id="@+id/DaysEt"
+        android:layout_toEndOf="@+id/daystv"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView4"
+        android:layout_alignRight="@+id/button_save" />
+
+</RelativeLayout>
