@@ -159,7 +159,9 @@ public class MainActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.send) {
 
+            startActivity( new Intent( MainActivity.this, IconPopup.class));
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
