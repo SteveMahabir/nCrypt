@@ -87,6 +87,21 @@
         android:onClick="onClickEvent"
         android:textColor="@color/white"
         android:layout_above="@+id/buttonUpdate"
+        android:layout_marginBottom="10dp"
+        android:longClickable="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Conversation"
+        android:id="@+id/buttonDelete"
+        android:background="@color/purple"
+        android:onClick="onClickEvent"
+        android:textColor="@color/white"
+        android:layout_above="@+id/buttonChat"
+        android:layout_alignEnd="@+id/checkPublicKey"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentStart="true"
         android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

@@ -66,13 +66,21 @@ public class MainActivity extends Activity {
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
 
-        //DeleteThread(74); //debug only
+        //For debug, uncomment if you want to reset your db.
+        //ResetDeletedThreadsAndMessages();
 
         LoadConversations();
 
         startService(new Intent(this, nCryptService.class));
     }
     //end onCreate
+
+    public void ResetDeletedThreadsAndMessages()
+    {
+        db.resetDeletedMessages();
+        db.resetDeletedThreads();
+        db.close();
+    }
 
     public void GetDeletedThreads()
     {
@@ -95,19 +103,6 @@ public class MainActivity extends Activity {
     public boolean isDeleted(Integer thread_id)
     {
         return deletedThreads.contains(thread_id);
-    }
-
-    /*
-     * returns true if delete was successful,
-     * LoadConversations should be called after this function
-     */
-    public boolean DeleteThread(Integer thread_id)
-    {
-        long rowsDeleted = db.insertDeletedThread(thread_id);
-
-        db.close();
-
-        return rowsDeleted > 0;
     }
 
     public void LoadConversations()

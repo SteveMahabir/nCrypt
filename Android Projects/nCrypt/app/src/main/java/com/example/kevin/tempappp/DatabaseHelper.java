@@ -201,6 +201,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 KEY_MESSAGE_ID}, KEY_THREAD_ID + "=" + threadId, null, null, null, null, null);
     }
 
+    //---deletes all thread id's from DeletedThreads table---
+    public long resetDeletedThreads()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_DELETED_THREADS, null, null);
+    }
+
+    //---deletes all thread id's from DeletedMessages table---
+    public long resetDeletedMessages()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_DELETED_MESSAGES, null, null);
+    }
+
     public static byte[] Serialize(Object obj) throws IOException {
         try {
             ByteArrayOutputStream b = new ByteArrayOutputStream();

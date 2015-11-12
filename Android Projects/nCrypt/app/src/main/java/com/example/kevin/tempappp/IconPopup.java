@@ -2,6 +2,7 @@ package com.example.kevin.tempappp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,8 +10,12 @@ import android.util.DisplayMetrics;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.Date;
 
 /**
  * Created by Nickademus on 10/27/15.
@@ -138,11 +143,25 @@ public class IconPopup extends Activity{
 
         editor.putString("skullour", skullour.toString());
         editor.putString("skullType", skullType.toString());
-        editor.putInt("spinnerSelect", ((Spinner)findViewById(R.id.spinner_colourPicker)).getSelectedItemPosition() );
+        editor.putInt("spinnerSelect", ((Spinner) findViewById(R.id.spinner_colourPicker)).getSelectedItemPosition());
 
         editor.commit();
 
+        // check to see if value was set previously
+        Integer numDays =  sharedpref.getInt("expiryNumDays", 0 );
+        //just set the numDays
+        String text = ((EditText)findViewById(R.id.DaysEt)).getText().toString();
+        editor.putInt("expiryNumDays", text.equals("") ? 0 : Integer.parseInt(text));
+        if (numDays == 0)
+        {
+            //the expiry was not previously set, so set the date with it
+            editor.putLong("expiryDateSet", new Date().getTime());
+        }
 
+        Toast.makeText(this, "Settings saved.", Toast.LENGTH_LONG).show();
+
+        Intent mainmenuint = new Intent(this, MainActivity.class);
+        startActivity(mainmenuint);
     }
 
     public void RbuttonOnclick(View view) {

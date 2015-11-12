@@ -1,5 +1,6 @@
 package com.example.kevin.tempappp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Activity;
@@ -81,6 +82,7 @@ public class ContactsActivity extends Activity {
 
 
     public void onClickEvent(View view) {
+        Intent mainmenuint;
         switch(view.getId())
         {
             case(R.id.buttonUpdate):
@@ -101,7 +103,7 @@ public class ContactsActivity extends Activity {
                     return;
                 }
 
-                Intent mainmenuint = new Intent(ContactsActivity.this, MainActivity.class);
+                mainmenuint = new Intent(ContactsActivity.this, MainActivity.class);
 
                 startActivity(mainmenuint);
 
@@ -121,8 +123,31 @@ public class ContactsActivity extends Activity {
                 intent.putExtra("threadid", Threadid);
                 startActivity(intent);
                 break;
-
+            case(R.id.buttonDelete):
+                if (DeleteThread(Threadid)) {
+                    Toast.makeText(this, "Conversation successfully deleted.", Toast.LENGTH_LONG).show();
+                    mainmenuint = new Intent(ContactsActivity.this, MainActivity.class);
+                    startActivity(mainmenuint);
+                }
+                else
+                {
+                    Toast.makeText(this, "Something went wrong, conversation not deleted.", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
+    }
+
+    /*
+     * returns true if delete was successful,
+     * LoadConversations should be called after this function
+     */
+    public boolean DeleteThread(Integer thread_id)
+    {
+        long rowsDeleted = db.insertDeletedThread(thread_id);
+
+        db.close();
+
+        return rowsDeleted > 0;
     }
 
     private boolean infoValidated() {
