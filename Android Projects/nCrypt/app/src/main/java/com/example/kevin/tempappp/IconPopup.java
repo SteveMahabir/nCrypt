@@ -145,8 +145,6 @@ public class IconPopup extends Activity{
         editor.putString("skullType", skullType.toString());
         editor.putInt("spinnerSelect", ((Spinner) findViewById(R.id.spinner_colourPicker)).getSelectedItemPosition());
 
-        editor.commit();
-
         // check to see if value was set previously
         Integer numDays =  sharedpref.getInt("expiryNumDays", 0 );
         //just set the numDays
@@ -157,6 +155,8 @@ public class IconPopup extends Activity{
             //the expiry was not previously set, so set the date with it
             editor.putLong("expiryDateSet", new Date().getTime());
         }
+
+        editor.commit();
 
         Toast.makeText(this, "Settings saved.", Toast.LENGTH_LONG).show();
 

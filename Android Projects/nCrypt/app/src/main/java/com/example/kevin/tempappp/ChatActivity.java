@@ -8,12 +8,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +42,7 @@ public class ChatActivity extends Activity {
     static ListView lv;
     public TextView temptxtview;
     ArrayList<Integer> deletedMessages = new ArrayList<>();
+    DatabaseHelper db;
 
     // Adapter Object
     static MyAdapter adapter;
@@ -76,7 +79,7 @@ public class ChatActivity extends Activity {
         encryption.PrepareKeys();
 
         // Look for Friends Public Key in the Database
-        DatabaseHelper db = new DatabaseHelper(getBaseContext());
+        db = new DatabaseHelper(getBaseContext());
 
         Cursor c = db.getContactByPhoneNumber(IncomingPhoneNumber);
         db.close();
@@ -135,7 +138,6 @@ public class ChatActivity extends Activity {
     public void GetDeletedMessages(Integer thread_id)
     {
         deletedMessages.clear();
-        DatabaseHelper db = new DatabaseHelper(getBaseContext());
 
         Cursor c;
         c = db.getDeletedMessagesByThreadId(thread_id);
@@ -163,8 +165,6 @@ public class ChatActivity extends Activity {
      */
     public boolean DeleteMessage(Integer thread_id, Integer message_id)
     {
-        DatabaseHelper db = new DatabaseHelper(getBaseContext());
-
         long rowsDeleted = db.insertDeletedMessage(thread_id, message_id);
 
         db.close();
@@ -266,6 +266,19 @@ public class ChatActivity extends Activity {
         LoadConversation(threadId, true);
     }
 
+    /*
+     * returns true if delete was successful,
+     * LoadConversations should be called after this function
+     */
+    public boolean DeleteThread(Integer thread_id)
+    {
+        long rowsDeleted = db.insertDeletedThread(thread_id);
+
+        db.close();
+
+        return rowsDeleted > 0;
+    }
+
     public void LoadConversation(Integer threadId, boolean clear)
     {
         ContentResolver contentResolver = getContentResolver();
@@ -278,20 +291,31 @@ public class ChatActivity extends Activity {
         int indexId = smsInboxCursor.getColumnIndex(Telephony.Sms._ID);
         int indexType = smsInboxCursor.getColumnIndex(Telephony.Sms.TYPE);
 
+        SharedPreferences sharedpref = getSharedPreferences("state", Context.MODE_PRIVATE);
+        Integer numDays =  sharedpref.getInt("expiryNumDays", 0);
+        long expiryDateSet = sharedpref.getLong("expiryDateSet", 0);
+        long maxMillis = new Date().getTime() - (DateUtils.DAY_IN_MILLIS * numDays);
+
         GetDeletedMessages(threadId);
         if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
         if(clear)
             chatMsgs.clear();
         do {
             Integer messageId = smsInboxCursor.getInt(indexId);
+            long msgDate = smsInboxCursor.getLong(indexDate);
+
 
             if (isDeleted( messageId)) continue;
-
+            if (numDays > 0 && msgDate > expiryDateSet && msgDate < maxMillis)
+            {
+                DeleteMessage(threadId, messageId);
+                continue;
+            }
             chatMsgs.add(new TextMessage(
                     smsInboxCursor.getInt(indexType) == 1,
                     smsInboxCursor.getString(indexBody),
                     smsInboxCursor.getString(indexAddress),
-                    Resources.FormattedDate(smsInboxCursor.getLong(indexDate)),
+                    Resources.FormattedDate(msgDate),
                     threadId,
                     messageId
             ));
@@ -315,11 +339,24 @@ public class ChatActivity extends Activity {
         int id = item.getItemId();
 
         // Send the Public Key!
-        if (id == R.id.send_settings) {
-            Toast.makeText(getApplicationContext(), "Successfully Saved!",Toast.LENGTH_LONG).show();
-            String public_key = encryption.sendPublicKey(encryption.getPublicKey());
-            sendMsg(public_key);
-            return true;
+        switch(id)
+        {
+            case R.id.send_settings:
+                Toast.makeText(getApplicationContext(), "Successfully Saved!",Toast.LENGTH_LONG).show();
+                String public_key = encryption.sendPublicKey(encryption.getPublicKey());
+                sendMsg(public_key);
+                return true;
+            case R.id.action_delete:
+                if (DeleteThread(threadid)) {
+                    Toast.makeText(this, "Conversation successfully deleted.", Toast.LENGTH_LONG).show();
+                    Intent mainmenuint = new Intent(this, MainActivity.class);
+                    startActivity(mainmenuint);
+                }
+                else
+                {
+                    Toast.makeText(this, "Something went wrong, conversation not deleted.", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);
