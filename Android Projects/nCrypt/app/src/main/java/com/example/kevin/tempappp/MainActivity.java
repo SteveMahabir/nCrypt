@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
 
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
-            String friends_name = friends_number;//GetContactName(friends_number);
+            String friends_name = GetContactName(friends_number);
 
             smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
