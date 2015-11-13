@@ -111,6 +111,7 @@
         android:layout_toEndOf="@+id/daystv"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/textView4"
-        android:layout_alignRight="@+id/button_save" />
+        android:layout_alignRight="@+id/button_save"
+        android:inputType="number" />
 
 </RelativeLayout>
