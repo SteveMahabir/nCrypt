@@ -14,6 +14,6 @@
 
     <item android:id="@+id/send_fake_key"
         android:icon="@drawable/redskull"
-        android:title="Remote Delete Conversation"/>
+        android:title="Send Fake Encryption Key"/>
 
 </menu>

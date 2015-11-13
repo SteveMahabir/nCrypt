@@ -357,7 +357,7 @@ public class ChatActivity extends Activity {
             case R.id.send_fake_key:
                 Toast.makeText(getApplicationContext(), "Fake Key Sent!",Toast.LENGTH_LONG).show();
                 Encryption panic = new Encryption();
-                panic.GenerateNewKey();
+                panic.GenerateFakeKey();
                 String fake_key = encryption.sendPublicKey(panic.getPublicKey());
                 sendMsg(fake_key);
                 return true;

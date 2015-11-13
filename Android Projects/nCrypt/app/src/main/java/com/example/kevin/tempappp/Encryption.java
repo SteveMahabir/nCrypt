@@ -96,6 +96,21 @@ public class Encryption {
         }
     }
 
+    public void GenerateFakeKey(){
+        try {
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(1024);
+            KeyPair kp = kpg.genKeyPair();
+
+            this.publicKey = kp.getPublic();
+            this.privateKey = kp.getPrivate();
+
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA key pair error");
+        }
+    }
+
     public void GenerateNewKey(){
         try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
