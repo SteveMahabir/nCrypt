@@ -112,6 +112,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/textView4"
         android:layout_alignRight="@+id/button_save"
-        android:inputType="number" />
+        android:inputType="number"
+        android:maxLength="4" />
 
 </RelativeLayout>
