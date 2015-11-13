@@ -93,6 +93,9 @@ public class ChatActivity extends Activity {
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
         threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
         final ImageButton button = (ImageButton)findViewById(R.id.send);
+        button.setEnabled(false);
+        final ImageButton buttonPlain = (ImageButton)findViewById(R.id.sendPlain);
+        buttonPlain.setEnabled(false);
         edtMessage=(EditText)findViewById(R.id.chatLine);
         edtMessage.addTextChangedListener(new TextWatcher() {
 
@@ -101,8 +104,10 @@ public class ChatActivity extends Activity {
 
                 if(s.toString().trim().length()==0){
                     button.setEnabled(false);
+                    buttonPlain.setEnabled(false);
                 } else {
                     button.setEnabled(true);
+                    buttonPlain.setEnabled(true);
                 }
 
 
