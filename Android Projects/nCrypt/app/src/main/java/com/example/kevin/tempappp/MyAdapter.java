@@ -79,7 +79,8 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
             msgView = (TextView) rowView.findViewById(R.id.incoming);
             // 4. Set the text for textView
-                if(encryption.isEncryptedMessage(msgArrayList.get(position).getText())) {
+                if(encryption.isEncryptedMessage(msgArrayList.get(position).getText()) ||
+                        encryption.isEncryptedPublicKey(msgArrayList.get(position).getText())) {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
@@ -106,9 +107,13 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
                     msgView.setText("");
                     msgView.setVisibility(View.INVISIBLE);
                 }
+                else if(encryption.isEncryptedPublicKey(msgArrayList.get(position).getText())) {
+                    msgView.setText("[ Key ]");
+                    msgView.setVisibility(View.INVISIBLE);
+                }
                 else {
                     msgView.setText(msgArrayList.get(position).getText());
-                    msgView.setVisibility(View.VISIBLE);
+            msgView.setVisibility(View.VISIBLE);
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
@@ -122,6 +127,8 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             //set incoming or outgoing
             msgView.setGravity(msgArrayList.get(position).getIsIncoming() ? Gravity.LEFT : Gravity.RIGHT);
         }
+
+
         // 5. return rowView
         return rowView;
     }

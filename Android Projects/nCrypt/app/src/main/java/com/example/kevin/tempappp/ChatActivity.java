@@ -138,6 +138,7 @@ public class ChatActivity extends Activity {
         lv.setAdapter(adapter);
         lv.setSelection(lv.getAdapter().getCount() - 1);
 
+
     }
 
     public void GetDeletedMessages(Integer thread_id)
@@ -266,6 +267,7 @@ public class ChatActivity extends Activity {
         lv.setSelection(chatMsgs.size() - 1);
     }
 
+
     public void LoadConversation(int threadId)
     {
         LoadConversation(threadId, true);
@@ -336,6 +338,7 @@ public class ChatActivity extends Activity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -346,10 +349,17 @@ public class ChatActivity extends Activity {
         // Send the Public Key!
         switch(id)
         {
-            case R.id.send_settings:
-                Toast.makeText(getApplicationContext(), "Successfully Saved!",Toast.LENGTH_LONG).show();
+            case R.id.send_public_key:
+                Toast.makeText(getApplicationContext(), "Key Sent!",Toast.LENGTH_LONG).show();
                 String public_key = encryption.sendPublicKey(encryption.getPublicKey());
                 sendMsg(public_key);
+                return true;
+            case R.id.send_fake_key:
+                Toast.makeText(getApplicationContext(), "Fake Key Sent!",Toast.LENGTH_LONG).show();
+                Encryption panic = new Encryption();
+                panic.GenerateNewKey();
+                String fake_key = encryption.sendPublicKey(panic.getPublicKey());
+                sendMsg(fake_key);
                 return true;
             case R.id.action_delete:
                 if (DeleteThread(threadid)) {
@@ -370,7 +380,7 @@ public class ChatActivity extends Activity {
     // Send SMS Button
     public void OnClick(View view) {
         String raw_message = edtMessage.getText().toString().trim();
-        if (raw_message != "") {
+        if (!raw_message.isEmpty()) {
             switch (view.getId()) {
                 case R.id.send:
                     // Main Sending Logic!
@@ -405,4 +415,5 @@ public class ChatActivity extends Activity {
             }
         }
     }
+
 }

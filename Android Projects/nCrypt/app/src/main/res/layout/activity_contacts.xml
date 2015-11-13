@@ -36,7 +36,6 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="phone"
         android:ems="10"
         android:id="@+id/editTextPhone"
         android:layout_below="@+id/editTextName"
@@ -46,7 +45,8 @@
         android:text="Phone:"
         android:hint="Phone Number"
         android:textColor="@color/white"
-        android:textColorHint="@color/white" />
+        android:textColorHint="@color/white"
+        android:inputType="text" />
 
     <CheckBox
         android:layout_width="wrap_content"

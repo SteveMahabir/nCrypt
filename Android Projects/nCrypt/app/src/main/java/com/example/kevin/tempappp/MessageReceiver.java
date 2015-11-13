@@ -111,6 +111,8 @@ public class MessageReceiver extends BroadcastReceiver {
                 }
                 showNotification(context, newMessage);
 
+
+
                 //Toast.makeText(context, str, Toast.LENGTH_LONG).show();
             }
         }

@@ -2,11 +2,14 @@ package com.example.kevin.tempappp;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.provider.Telephony;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.util.ArrayList;
+
 
 public class MainActivity extends Activity {
 
@@ -66,12 +70,21 @@ public class MainActivity extends Activity {
         lv.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setAdapter(adapter);
 
+        //boolean securityOverrideFactor = true;
+        //if(!SecurityOverride.isDefaultSecurityEnabled(getApplicationContext()))
+        //    securityOverrideFactor = SecurityOverride.setDefaultSecurityEnabled(getApplicationContext(), true);
+
+        //System.out.println("Security Override: " + securityOverrideFactor);
+
+        //deleteConversation("5195207040");
+
         //For debug, uncomment if you want to reset your db.
         //ResetDeletedThreadsAndMessages();
 
         LoadConversations();
 
         startService(new Intent(this, nCryptService.class));
+
     }
     //end onCreate
 
@@ -148,7 +161,7 @@ public class MainActivity extends Activity {
 
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
-            String friends_name = friends_number;//GetContactName(friends_number);
+            String friends_name = GetContactName(friends_number);
 
             smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
@@ -261,11 +274,11 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-
         db.insertContact("5195207040", "Steve!", encryption.getPublicKey());
         db.insertContact("5194945387", "Kevin!", encryption.getPublicKey());
         db.insertContact("5192819776", "Katrina!", encryption.getPublicKey());
         db.insertContact("5197199890", "Nick!", encryption.getPublicKey());
+        //db.insertContact("this_is_a_testing_email@katrina_finds_bugs.ca", "Email!", encryption.getPublicKey());
 
         Cursor c;
         c = db.getAllContacts();
@@ -302,17 +315,22 @@ public class MainActivity extends Activity {
     private String GetContactName(String phoneno) {
         String returnName = "";
         // Open Database and Look for Contacts
-        Cursor c;
-        c = db.getContactByPhoneNumber(phoneno);
+        try {
+            Cursor c;
+            c = db.getContactByPhoneNumber(phoneno);
 
-        // Name found!
-        if (c.moveToFirst())
-            returnName = c.getString(2);
-        // Name not found, Add to Database!
-        else
-            db.insertContact(phoneno, "", null);
+            // Name found!
+            if (c.moveToFirst())
+                returnName = c.getString(2);
+                // Name not found, Add to Database!
+            else
+                db.insertContact(phoneno, "", null);
 
-        db.close();
+            db.close();
+        }
+        catch(Exception ex) {
+            returnName = "Error Retrieving Name";
+        }
         return returnName;
     }
     //End GetContactName
@@ -324,4 +342,20 @@ public class MainActivity extends Activity {
         intent.putExtra("MyPhoneno", phoneNumber);
         startActivity(intent);
     }//end ManageContact
+
+    private void deleteConversation(String phoneNumber){
+
+        String numberFilter = "address='"+ phoneNumber + "'";
+        String messageid = null;
+
+        Cursor cursor = getContentResolver().query(Uri.parse("content://sms/"),null,
+                numberFilter, null, null); // Get all messages with this number
+
+        if (cursor.moveToFirst()) {
+            messageid = cursor.getString(0);
+        }
+        if(messageid != null)
+            getContentResolver().delete(Uri.parse("content://sms/" + messageid), null, null);
+    }
+
 }//end MainActivity
