@@ -329,7 +329,7 @@ public class MainActivity extends Activity {
             db.close();
         }
         catch(Exception ex) {
-            returnName = "Error Retrieving Name";
+            returnName = phoneno;
         }
         return returnName;
     }
