@@ -72,7 +72,20 @@ public class ChatActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        // Get Variables and Intents
         globals = ((nCryptApplication)(this.getApplication()));
+        IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
+        phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
+        threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
+        String friends_name = String.valueOf(getIntent().getExtras().getString("contactname"));
+
+        this.getActionBar().setDisplayShowTitleEnabled(true);
+
+        if(friends_name.isEmpty())
+            this.getActionBar().setTitle(phoneNumber);
+        else
+            this.getActionBar().setTitle(friends_name);
+
 
         // Grab the Keys
         encryption = new Encryption();
@@ -89,9 +102,6 @@ public class ChatActivity extends Activity {
         if (c.moveToFirst())
         friends_encryption.setPublicKey((Key) DatabaseHelper.Deserialize(c.getBlob(3)));
 
-        IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
-        phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
-        threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
         final ImageButton button = (ImageButton)findViewById(R.id.send);
         button.setEnabled(false);
         final ImageButton buttonPlain = (ImageButton)findViewById(R.id.sendPlain);

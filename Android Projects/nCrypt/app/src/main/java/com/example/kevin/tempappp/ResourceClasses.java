@@ -394,6 +394,7 @@ class touchListener_Contact implements AdapterView.OnTouchListener {
                     intent.putExtra("phoneNo", friendsNumber);
                     intent.putExtra("MyPhoneno", myPhoneNumber);
                     intent.putExtra("threadid", threadid);
+                    intent.putExtra("contactname", name);
                     //intent.putExtra("UserPrivateKey" , encryption.privateKey);
                     //DataWrapper dw = new DataWrapper(chatMessageList);
                     //intent.putExtra("data", dw);
