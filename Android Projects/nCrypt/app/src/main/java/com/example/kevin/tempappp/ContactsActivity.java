@@ -99,7 +99,7 @@ public class ContactsActivity extends Activity {
             case(R.id.buttonUpdate):
                 if(infoValidated()) {
 
-                    if(db.updateContact(phoneNumber, name, null)) {
+                    if(db.updateContact(phoneNumber, name, null, 0)) {
                         db.close();
                         Toast.makeText(this, "Success, " + name +  " Updated!", Toast.LENGTH_LONG).show();
                         finish();

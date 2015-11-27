@@ -83,7 +83,7 @@ public class MessageReceiver extends BroadcastReceiver {
                         // Public Key Received! Store in the Database
                         db = new DatabaseHelper(context);
 
-                        if(db.updateContact(ChatActivity.GetConversationPhoneNumber(), null, public_key))
+                        if(db.updateContact(ChatActivity.GetConversationPhoneNumber(), null, public_key, 0))
                             Toast.makeText(context, "Encryption Key Received!", Toast.LENGTH_LONG).show();
                         else
                             Toast.makeText(context, "Key received, failed to store...", Toast.LENGTH_LONG).show();

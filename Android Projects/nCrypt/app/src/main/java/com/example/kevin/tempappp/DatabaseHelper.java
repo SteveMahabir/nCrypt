@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     static final String KEY_PHONENO = "phoneno";
     static final String KEY_NAME = "name";
     static final String KEY_PUBLIC = "public_key";
+    static final String KEY_PRIORITY = "priority";
 
     // DELTED MESSAGES Table - column names
     static final String KEY_MESSAGE_ID = "message_id";
@@ -52,7 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TABLE_CONTACTS + "(" + KEY_ROWID + " integer primary key autoincrement, "
             + KEY_PHONENO + " text, "
             + KEY_NAME + " text, "
-            + KEY_PUBLIC + " blob);";
+            + KEY_PUBLIC + " blob, "
+            + KEY_PRIORITY + " integer);";
 
     // DELETED THREADS table create statement
     static final String CREATE_TABLE_DELETED_THREADS = "create table "
@@ -113,6 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         initialValues.put(KEY_PHONENO, phone);
         initialValues.put(KEY_NAME, name);
         initialValues.put(KEY_PUBLIC, serialized_public_key);
+        initialValues.put(KEY_PRIORITY, 0); // This is used upon creation, make all contacts 0
         return db.insert(TABLE_CONTACTS, null, initialValues);
     }
 
@@ -126,15 +129,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllContacts() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.query(TABLE_CONTACTS, new String[]{KEY_ROWID, KEY_PHONENO,
-                KEY_NAME, KEY_PUBLIC}, null, null, null, null, null);
+                KEY_NAME, KEY_PUBLIC, KEY_PRIORITY}, null, null, null, null, null);
     }
 
     //---retrieves a particular contact---
     public Cursor getContactByPhoneNumber(String phoneno) throws SQLException {
+
+        if(phoneno == null)
+            return null;
+
+        if(phoneno.contains("+"))
+            phoneno = phoneno.substring(1);
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor mCursor =
                 db.query(true, TABLE_CONTACTS, new String[]{KEY_ROWID,
-                                KEY_PHONENO, KEY_NAME, KEY_PUBLIC}, KEY_PHONENO + "=" + phoneno, null,
+                                KEY_PHONENO, KEY_NAME, KEY_PUBLIC, KEY_PRIORITY}, KEY_PHONENO + "=" + phoneno, null,
                         null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -143,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //---updates a contact---
-    public boolean updateContact(String phoneno, String name, Key public_key) {
+    public boolean updateContact(String phoneno, String name, Key public_key, int priority) {
         SQLiteDatabase db = this.getWritableDatabase();
         // Must have phone number as it is the primary key
         ContentValues args = new ContentValues();
@@ -163,6 +173,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (name != null)
             args.put(KEY_NAME, name);
+
+        args.put(KEY_PRIORITY, priority);
 
         return db.update(TABLE_CONTACTS, args, KEY_PHONENO + "=" + phoneno, null) > 0;
     }
