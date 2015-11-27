@@ -77,14 +77,15 @@ public class ChatActivity extends Activity {
         IncomingPhoneNumber = String.valueOf(getIntent().getExtras().getString("phoneNo"));
         phoneNumber = String.valueOf(getIntent().getExtras().getString("MyPhoneno"));
         threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
-        String companyName = String.valueOf(getIntent().getExtras().getString("company"));
+        String friends_name = String.valueOf(getIntent().getExtras().getString("contactname"));
 
         this.getActionBar().setDisplayShowTitleEnabled(true);
 
-        if(companyName != "null")
-            this.getActionBar().setTitle(companyName);
-        else
+        if(friends_name.isEmpty())
             this.getActionBar().setTitle(phoneNumber);
+        else
+            this.getActionBar().setTitle(friends_name);
+
 
         // Grab the Keys
         encryption = new Encryption();

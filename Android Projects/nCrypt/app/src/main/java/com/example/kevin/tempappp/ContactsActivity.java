@@ -140,6 +140,7 @@ public class ContactsActivity extends Activity {
                 intent.putExtra("phoneNo", phoneNumber);
                 intent.putExtra("MyPhoneno", myphoneNumber);
                 intent.putExtra("threadid", Threadid);
+                intent.putExtra("contactname", name);
                 startActivity(intent);
                 break;
             case(R.id.buttonDelete):
