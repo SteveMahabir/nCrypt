@@ -7,19 +7,12 @@
     android:background="@drawable/chatbg_gradient"
     >
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="350dp"
-        android:id="@+id/listView"
-        android:layout_weight="1"
-        android:layout_margin="8dp"
-        android:transcriptMode="alwaysScroll"
-        android:divider="@android:color/transparent" />
-
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/listView">
+        android:layout_height="110dp"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/listView"
+        android:id="@+id/chatsection">
 
         <ImageButton
             android:layout_width="75dp"
@@ -95,6 +88,23 @@
             android:layout_marginRight="5dp" />
 
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/chatsection"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:id="@+id/listView"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:transcriptMode="alwaysScroll"
+            android:divider="@android:color/transparent" />
     </RelativeLayout>
 
 
