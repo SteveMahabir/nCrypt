@@ -46,6 +46,23 @@ public class IconPopup extends Activity{
         //So enums are classes in java, not ints, so have to do some stupd string crap to get this to work
         skullour =  SkullColour.valueOf( sharedpref.getString("skullour", SkullColour.Pueple.toString() ));
         skullType = SkullType.valueOf( sharedpref.getString("skullType", SkullType.Glow.toString() ));
+
+        RadioButton rbEyes = (RadioButton)findViewById( R.id.rb_eyes );
+        RadioButton rbGlow = (RadioButton)findViewById( R.id.rb_glow );
+        RadioButton rbFlat = (RadioButton)findViewById( R.id.rb_flat );
+        if(skullType == SkullType.Eyes)
+        {
+            rbEyes.setBackgroundColor(Color.GREEN);
+        }
+        else if(skullType == SkullType.Glow)
+        {
+            rbGlow.setBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            rbFlat.setBackgroundColor(Color.GREEN);
+        }
+
         spinnerSelect = sharedpref.getInt("spinnerSelect",0 );
 
         //set the spinner setOnItemSelectedListener
@@ -165,22 +182,40 @@ public class IconPopup extends Activity{
     }
 
     public void RbuttonOnclick(View view) {
+        RadioButton rbEyes = (RadioButton)findViewById( R.id.rb_eyes );
+        RadioButton rbGlow = (RadioButton)findViewById( R.id.rb_glow );
+        RadioButton rbFlat = (RadioButton)findViewById( R.id.rb_flat );
         switch ( view.getId() ){
             case R.id.rb_eyes:
+                resetBack();
                 skullType = SkullType.Eyes;
+                rbEyes.setBackgroundColor(Color.GREEN);
                 break;
             case R.id.rb_glow:
+                resetBack();
                 skullType = SkullType.Glow;
+                rbGlow.setBackgroundColor(Color.GREEN);
                 break;
             case R.id.rb_flat:
+                resetBack();
                 skullType = SkullType.Flat;
+                rbFlat.setBackgroundColor(Color.GREEN);
                 break;
 
         }//end switch
 
     }
 
+    public void resetBack()
+    {
+        RadioButton rbEyes = (RadioButton)findViewById( R.id.rb_eyes );
+        RadioButton rbGlow = (RadioButton)findViewById( R.id.rb_glow );
+        RadioButton rbFlat = (RadioButton)findViewById( R.id.rb_flat );
 
+        rbEyes.setBackgroundColor(Color.WHITE);
+        rbGlow.setBackgroundColor(Color.WHITE);
+        rbFlat.setBackgroundColor(Color.WHITE);
+    }
     /*
     * TODO button backgrounds
     *
