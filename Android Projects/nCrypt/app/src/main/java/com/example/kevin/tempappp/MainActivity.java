@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
                 deletedThreads.add(c.getInt(0));
             } while (c.moveToNext());
         }
-
+        c.close();
         db.close();
     }
 
@@ -169,8 +169,12 @@ public class MainActivity extends Activity {
                     smsConversationCursor.getString(indexSnippet),
                     Resources.FormattedDate(smsInboxCursor.getInt(indexDate)),
                             smsConversationCursor.getInt(indexMessageCount)));
+
+            smsInboxCursor.close();
+
         } while (smsConversationCursor.moveToNext());
 
+        smsConversationCursor.close();
     }
     //end LoadConversations
 
@@ -294,7 +298,7 @@ public class MainActivity extends Activity {
         }
 
         //db.deleteContact("5195207040");
-
+        c.close();
         db.close();
     }
     //End setupDatabase
@@ -326,6 +330,7 @@ public class MainActivity extends Activity {
             else
                 db.insertContact(phoneno, "", null);
 
+            c.close();
             db.close();
         }
         catch(Exception ex) {
@@ -356,6 +361,8 @@ public class MainActivity extends Activity {
         }
         if(messageid != null)
             getContentResolver().delete(Uri.parse("content://sms/" + messageid), null, null);
+
+        cursor.close();
     }
 
 }//end MainActivity

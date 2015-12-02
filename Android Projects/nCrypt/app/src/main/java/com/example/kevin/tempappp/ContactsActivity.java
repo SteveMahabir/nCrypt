@@ -53,7 +53,7 @@ public class ContactsActivity extends Activity {
         {
 
             Cursor c = db.getContactByPhoneNumber(phoneNumber);
-            db.close();
+
             Encryption friends_encryption = new Encryption();
 
             CheckBox cb = (CheckBox)findViewById(R.id.checkPublicKey);
@@ -62,6 +62,8 @@ public class ContactsActivity extends Activity {
             else
                 cb.setChecked(false);
 
+            c.close();
+            db.close();
         }
 
         // Set Contact Name

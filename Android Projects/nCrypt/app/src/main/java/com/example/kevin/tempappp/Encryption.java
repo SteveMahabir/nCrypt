@@ -174,6 +174,14 @@ public class Encryption {
             return false;
     }
 
+    // Helper Method
+    public boolean isRemoteDeleteKey(String message){
+        if(message.length() == 154)
+            return true;
+
+        return false;
+    }
+
 
     // Helper Method
     public static boolean areKeysPresent() {
@@ -221,7 +229,41 @@ public class Encryption {
         return null;
     }
 
+    // Used for Wiping a Conversatin Remotely
+    public String sendRemoteDelete(RemoteDelete remote_delete)
+    {
+        try {
+            // Serialize the Key into a byte[]
+            byte[] serialized_object = DatabaseHelper.Serialize(remote_delete);
+            // Encode the byte[] into String
+            String serialized_object_text = Base64.encodeToString(serialized_object, Base64.DEFAULT);
+            // Text the String to a person
+            return serialized_object_text;
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA encryption error");
+        }
 
+        return "";
+    }
+
+    // Used for Wiping a Conversation Remotely
+    public RemoteDelete recieveRemoteDelete(String serialized_object_text)
+    {
+        try{
+            // Decode the string into a byte[]
+            byte[] serialized_object = Base64.decode(serialized_object_text, Base64.DEFAULT);
+            // Deserialize the byte[] into a Key
+            RemoteDelete remote_delete = (RemoteDelete) DatabaseHelper.Deserialize(serialized_object);
+
+            return remote_delete;
+        }
+        catch (Exception e) {
+            Log.e(TAG, "RSA encryption error");
+        }
+
+        return null;
+    }
 
 
     // Getter sand Setters

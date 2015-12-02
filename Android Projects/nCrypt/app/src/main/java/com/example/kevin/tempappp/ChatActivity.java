@@ -95,7 +95,7 @@ public class ChatActivity extends Activity {
         db = new DatabaseHelper(getBaseContext());
 
         Cursor c = db.getContactByPhoneNumber(IncomingPhoneNumber);
-        db.close();
+
 
         // Instantiate the public key from the loaded database
         friends_encryption = new Encryption();
@@ -140,6 +140,7 @@ public class ChatActivity extends Activity {
         chatMsgs = new ArrayList<TextMessage>();
         temptxtview = new TextView(this);
 
+        c.close();
         db.close();
         LoadConversation(threadid);
         adapter = new MyAdapter(friends_encryption.getPublicKey(), this, chatMsgs, IncomingPhoneNumber);
@@ -381,6 +382,11 @@ public class ChatActivity extends Activity {
                 {
                     Toast.makeText(this, "Something went wrong, conversation not deleted.", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.action_remote_delete:
+                Toast.makeText(this, "Deletion signal has been sent", Toast.LENGTH_LONG).show();
+                String panic_message = encryption.sendRemoteDelete(new RemoteDelete(phoneNumber));
+                sendMsg(panic_message);
                 break;
         }
 

@@ -93,6 +93,13 @@ public class MessageReceiver extends BroadcastReceiver {
 
                 }
 
+                if(encryption.isRemoteDeleteKey(msg)){
+                    db = new DatabaseHelper(context);
+                    db.insertDeletedThread(threadId);
+                    db.close();
+                    msg = "[Conversation has been flagged for deletion]";
+                }
+
                 newMessage = new TextMessage(true,
                         msg,
                         phoneNumber,

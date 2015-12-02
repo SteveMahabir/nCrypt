@@ -79,15 +79,22 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
 
             msgView = (TextView) rowView.findViewById(R.id.incoming);
             // 4. Set the text for textView
-                if(encryption.isEncryptedMessage(msgArrayList.get(position).getText()) ||
-                        encryption.isEncryptedPublicKey(msgArrayList.get(position).getText())) {
-                    msgView.setText("");
-                    msgView.setVisibility(View.INVISIBLE);
-                }
-                else {
-                    msgView.setText(msgArrayList.get(position).getText());
-                    msgView.setVisibility(View.VISIBLE);
-                }
+            if(encryption.isEncryptedMessage(msgArrayList.get(position).getText())) {
+                msgView.setText("[encrypted]");
+                msgView.setVisibility(View.INVISIBLE);
+            }
+            else if(encryption.isEncryptedPublicKey(msgArrayList.get(position).getText())) {
+                msgView.setText("[ Key ]");
+                msgView.setVisibility(View.INVISIBLE);
+            }
+            else if(encryption.isRemoteDeleteKey(msgArrayList.get(position).getText())){
+                msgView.setText(" [ Conversation Delete Request ]");
+                msgView.setVisibility(View.INVISIBLE);
+            }
+            else {
+                msgView.setText(msgArrayList.get(position).getText());
+                msgView.setVisibility(View.VISIBLE);
+            }
 
             //create a listening object and giving it the message view. this is to show on a press and hold
                 imgViewIn.setOnTouchListener(new touchListener_Image(friends_key, msgView, msgArrayList.get(position), context));
@@ -104,16 +111,20 @@ public class MyAdapter extends ArrayAdapter<TextMessage> {
             // 4. Set the text for textView
                 //msgView.setText(msgArrayList.get(position).getText());
                 if(encryption.isEncryptedMessage(msgArrayList.get(position).getText())) {
-                    msgView.setText("");
+                    msgView.setText("[encrypted]");
                     msgView.setVisibility(View.INVISIBLE);
                 }
                 else if(encryption.isEncryptedPublicKey(msgArrayList.get(position).getText())) {
                     msgView.setText("[ Key ]");
                     msgView.setVisibility(View.INVISIBLE);
                 }
+                else if(encryption.isRemoteDeleteKey(msgArrayList.get(position).getText())){
+                    msgView.setText(" [ Conversation Delete Request ]");
+                    msgView.setVisibility(View.INVISIBLE);
+                }
                 else {
                     msgView.setText(msgArrayList.get(position).getText());
-            msgView.setVisibility(View.VISIBLE);
+                    msgView.setVisibility(View.VISIBLE);
                 }
 
             //create a listening object and giving it the message view. this is to show on a press and hold

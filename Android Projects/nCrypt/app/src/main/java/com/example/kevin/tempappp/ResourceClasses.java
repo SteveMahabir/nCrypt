@@ -234,9 +234,11 @@ class touchListener_Image implements View.OnTouchListener{
 
         boolean isEncryptedMessage =encryption.isEncryptedMessage(textMessage.getText());
         boolean isPublicKey = encryption.isEncryptedPublicKey(textMessage.getText());
+        boolean isRemoteKey = encryption.isRemoteDeleteKey(textMessage.getText());
 
-        if(!isEncryptedMessage && !isPublicKey)
+        if(!isEncryptedMessage && !isPublicKey && !isRemoteKey)
             return true;
+
         //if (!encryption.isEncryptedMessage(textMessage.getText()))
         //return true;
 
@@ -253,6 +255,14 @@ class touchListener_Image implements View.OnTouchListener{
                     retVal = true;
                     break;
                 }
+
+                if(encryption.isRemoteDeleteKey(textMessage.getText())){
+                    textview.setText("[ Conversation Deletion Request ]");
+                    textview.setVisibility(View.VISIBLE);
+                    retVal = true;
+                    break;
+                }
+
                 // Start Showing the Message
                 if(public_key != null) {
                     // If it's yours or your friends message, whatever decrypt anyway

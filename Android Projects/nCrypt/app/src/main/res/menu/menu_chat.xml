@@ -9,11 +9,16 @@
         android:icon="@drawable/redskull"
         android:title="Send Decryption Key" />
 
-    <item android:id="@+id/action_delete"
-        android:title="Delete Conversation"/>
-
     <item android:id="@+id/send_fake_key"
         android:icon="@drawable/redskull"
-        android:title="Send Fake Encryption Key"/>
+        android:title="Send Fake Decryption Key"/>
+
+    <item android:id="@+id/action_delete"
+        android:icon="@drawable/redskull"
+        android:title="Delete Conversation"/>
+
+    <item android:id="@+id/action_remote_delete"
+        android:icon="@drawable/redskull"
+        android:title="Remote Delete Conversation"/>
 
 </menu>
