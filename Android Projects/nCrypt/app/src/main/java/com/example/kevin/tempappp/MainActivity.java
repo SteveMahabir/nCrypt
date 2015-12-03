@@ -162,13 +162,15 @@ public class MainActivity extends Activity {
             // Query database for name
             String friends_number = smsInboxCursor.getString(indexAddress);
             String friends_name = GetContactName(friends_number);
+            Integer friends_priority = GetContactPriority(friends_number);
+            
 
             smsConversationList.add(new Conversation(friends_name,
                     smsInboxCursor.getString(indexAddress),
                     thread_id,
                     smsConversationCursor.getString(indexSnippet),
                     Resources.FormattedDate(smsInboxCursor.getInt(indexDate)),
-                            smsConversationCursor.getInt(indexMessageCount)));
+                            smsConversationCursor.getInt(indexMessageCount),friends_priority));
 
             smsInboxCursor.close();
 
@@ -337,6 +339,30 @@ public class MainActivity extends Activity {
             returnName = phoneno;
         }
         return returnName;
+    }
+    //End GetContactName
+
+    private Integer GetContactPriority(String phoneno) {
+        Integer returnPriority = -1;
+        // Open Database and Look for Contacts
+        try {
+            Cursor c;
+            c = db.getContactByPhoneNumber(phoneno);
+
+            // Name found!
+            if (c.moveToFirst())
+                returnPriority = c.getInt(4);
+                // Name not found, Add to Database!
+            else
+                db.insertContact(phoneno, "", null);
+
+            c.close();
+            db.close();
+        }
+        catch(Exception ex) {
+            returnPriority = 5;
+        }
+        return returnPriority;
     }
     //End GetContactName
 

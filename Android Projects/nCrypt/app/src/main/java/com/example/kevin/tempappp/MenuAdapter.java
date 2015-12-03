@@ -58,7 +58,8 @@ public class MenuAdapter extends ArrayAdapter<Conversation> {
                         phoneNoArrayList.get(position).getPhoneNumber(),
                         phoneNoArrayList.get(position).getThreadId(),
                         myPhoneNumber,
-                        context));
+                        context,
+                        phoneNoArrayList.get(position).getPriority()));
 
         //set incoming or outgoing
         msgView.setGravity(Gravity.LEFT);

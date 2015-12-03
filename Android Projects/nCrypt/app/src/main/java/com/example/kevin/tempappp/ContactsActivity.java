@@ -1,5 +1,6 @@
 package com.example.kevin.tempappp;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ public class ContactsActivity extends Activity {
     String phoneNumber;
     String name;
     int Threadid;
+    int priority;
 
     // Database Object
     public DatabaseHelper db;
@@ -43,7 +45,17 @@ public class ContactsActivity extends Activity {
             name = "";
 
         Threadid = Integer.valueOf(getIntent().getExtras().getInt("threadid"));
+        priority = Integer.valueOf(getIntent().getExtras().getInt("priority"));
 
+        CheckBox cbprior = (CheckBox)findViewById(R.id.checkPriority);
+        if(priority == 1)
+        {
+            cbprior.setChecked(true);
+        }
+        else
+        {
+            cbprior.setChecked(false);
+        }
 
         // Get Contact Phone Number
         phoneNumber = String.valueOf(getIntent().getExtras().getString("phoneno"));
@@ -96,12 +108,22 @@ public class ContactsActivity extends Activity {
 
     public void onClickEvent(View view) {
         Intent mainmenuint;
+        Integer priority = 0;
+        CheckBox pcheck = (CheckBox)findViewById(R.id.checkPriority);
+        if(pcheck.isChecked())
+        {
+            priority=1;
+        }
+        else
+        {
+            priority =0;
+        }
         switch(view.getId())
         {
             case(R.id.buttonUpdate):
                 if(infoValidated()) {
 
-                    if(db.updateContact(phoneNumber, name, null, 0)) {
+                    if(db.updateContact(phoneNumber, name, null, priority)) {
                         db.close();
                         Toast.makeText(this, "Success, " + name +  " Updated!", Toast.LENGTH_LONG).show();
                         finish();

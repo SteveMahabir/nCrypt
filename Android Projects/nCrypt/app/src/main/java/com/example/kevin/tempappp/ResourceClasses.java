@@ -322,6 +322,7 @@ class touchListener_Conversation implements AdapterView.OnItemClickListener{
         //String phoneNo = numbersOnly.get(position).getNumber();
         String phoneNo = smsConversationList.get(position).getPhoneNumber();
         int threadid = smsConversationList.get(position).getThreadId();
+        int priority = smsConversationList.get(position).getPriority();
         //show what number was selected
         Toast.makeText(context, phoneNo, Toast.LENGTH_LONG).show();
 
@@ -329,6 +330,7 @@ class touchListener_Conversation implements AdapterView.OnItemClickListener{
         intent.putExtra("phoneNo", phoneNo);
         intent.putExtra("MyPhoneno", phoneNumber);
         intent.putExtra("threadid", threadid);
+        intent.putExtra("priority", priority);
         //intent.putExtra("UserPrivateKey" , encryption.privateKey);
         //DataWrapper dw = new DataWrapper(chatMessageList);
         //intent.putExtra("data", dw);
@@ -347,15 +349,20 @@ class touchListener_Contact implements AdapterView.OnTouchListener {
     private int threadid;
     private String myPhoneNumber;
     private boolean openConversation;
+    private int priority;
 
 
-    public touchListener_Contact(String _name, String phoneno, int threadno, String myPhoneNo, Context con) {
+    public touchListener_Contact(String _name, String phoneno, int threadno, String myPhoneNo, Context con, Integer prior) {
         name = _name;
         context = con;
         threadid = threadno;
         friendsNumber = phoneno;
         openConversation = true;
         myPhoneNumber = myPhoneNo;
+        if(prior == null)
+            priority = 0;
+        else
+            priority = prior;
     }
 
     final Handler handler = new Handler();
@@ -367,6 +374,7 @@ class touchListener_Contact implements AdapterView.OnTouchListener {
             intent.putExtra("name", name);
             intent.putExtra("phoneno", friendsNumber);
             intent.putExtra("threadid", threadid);
+            intent.putExtra("priority", priority);
             //intent.putExtra("UserPrivateKey" , encryption.privateKey);
             context.startActivity(intent);
         }
@@ -405,6 +413,7 @@ class touchListener_Contact implements AdapterView.OnTouchListener {
                     intent.putExtra("MyPhoneno", myPhoneNumber);
                     intent.putExtra("threadid", threadid);
                     intent.putExtra("contactname", name);
+                    intent.putExtra("priority", priority);
                     //intent.putExtra("UserPrivateKey" , encryption.privateKey);
                     //DataWrapper dw = new DataWrapper(chatMessageList);
                     //intent.putExtra("data", dw);

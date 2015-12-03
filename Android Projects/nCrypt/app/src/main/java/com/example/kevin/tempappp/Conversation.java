@@ -12,6 +12,7 @@ public class Conversation {
     private String lastMessageText;
     private String lastMessageDate;
     private Integer messageCount;
+    private Integer priority;
 
     public Conversation(String n, String p , Integer id, String t, String d, Integer c)  {
         super();
@@ -21,11 +22,20 @@ public class Conversation {
         this.lastMessageText = t;
         this.lastMessageDate = d;
         this.messageCount = c;
+        this.priority = 0;
+    }
+    public Conversation(String n, String p , Integer id, String t, String d, Integer c, Integer prior)  {
+        super();
+        this.priority= prior;
+        this.name = n;
+        this.phoneNumber = p;
+        this.threadId = id;
+        this.lastMessageText = t;
+        this.lastMessageDate = d;
+        this.messageCount = c;
     }
 
-    public String getName(){
-        return this.name;
-    }
+    public String getName(){return this.name; }
 
     public String getPhoneNumber(){
         return this.phoneNumber;
@@ -35,18 +45,13 @@ public class Conversation {
         return this.lastMessageText;
     }
 
-    public String getLastMessageDate(){
+    public String getLastMessageDate(){ return this.lastMessageDate;  }
 
-        return this.lastMessageDate;
-    }
+    public Integer getThreadId(){return this.threadId;}
 
-    public Integer getThreadId(){
+    public Integer getMessageCount(){return this.messageCount;}
 
-        return this.threadId;
-    }
+    public Integer getPriority(){return this.priority;
 
-    public Integer getMessageCount(){
-
-        return this.messageCount;
     }
 }

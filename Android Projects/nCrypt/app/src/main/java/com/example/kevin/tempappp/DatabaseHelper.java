@@ -174,6 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (name != null)
             args.put(KEY_NAME, name);
 
+
         args.put(KEY_PRIORITY, priority);
 
         return db.update(TABLE_CONTACTS, args, KEY_PHONENO + "=" + phoneno, null) > 0;
