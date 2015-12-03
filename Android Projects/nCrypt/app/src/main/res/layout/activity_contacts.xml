@@ -53,9 +53,8 @@
         android:layout_height="wrap_content"
         android:text="Status of Public Key"
         android:id="@+id/checkPublicKey"
-        android:layout_below="@+id/editTextPhone"
+        android:layout_below="@+id/checkPriority"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="61dp"
         android:layout_alignEnd="@+id/editTextPhone"
         android:checked="false"
         android:enabled="true"
@@ -103,5 +102,19 @@
         android:layout_alignParentBottom="false"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="10dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Priority Contact"
+        android:id="@+id/checkPriority"
+        android:layout_below="@+id/editTextPhone"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:enabled="true"
+        android:clickable="false"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>
