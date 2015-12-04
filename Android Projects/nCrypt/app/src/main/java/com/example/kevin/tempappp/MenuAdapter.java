@@ -4,6 +4,7 @@ package com.example.kevin.tempappp;
  * Created by Kevin on 10/17/2015.
  */
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 public class MenuAdapter extends ArrayAdapter<Conversation> {
 
@@ -25,9 +27,15 @@ public class MenuAdapter extends ArrayAdapter<Conversation> {
         super(context, R.layout.row, phoneNoArrayList);
 
         this.context = context;
+        // Sort the phoneNoArrayList before loading it
+        Collections.sort(phoneNoArrayList, new SortingAlgorithms());
         this.phoneNoArrayList = phoneNoArrayList;
         this.myPhoneNumber = myPhone;
 
+    }
+
+    public boolean compare(Conversation lhs, Conversation rhs) {
+        return lhs.getPriority() < rhs.getPriority();
     }
 
     @Override

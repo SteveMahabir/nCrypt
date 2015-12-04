@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MainActivity extends Activity {
@@ -177,6 +178,7 @@ public class MainActivity extends Activity {
         } while (smsConversationCursor.moveToNext());
 
         smsConversationCursor.close();
+        Collections.sort(smsConversationList, new SortingAlgorithms());
     }
     //end LoadConversations
 
