@@ -12,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.Key;
+
 public class ContactsActivity extends Activity {
 
     // Contact Info
@@ -65,12 +67,19 @@ public class ContactsActivity extends Activity {
         {
 
             Cursor c = db.getContactByPhoneNumber(phoneNumber);
-
+            boolean havekey = false;
+            try {
+                Key k = (Key) DatabaseHelper.Deserialize(c.getBlob(3));
+                if(k != null)
+                    havekey = true;
+            }catch(Exception ex){
+                int i = 0;
+            }
             Encryption friends_encryption = new Encryption();
 
             CheckBox cb = (CheckBox)findViewById(R.id.checkPublicKey);
             if (c.moveToFirst())
-                cb.setChecked(true);
+                cb.setChecked(havekey);
             else
                 cb.setChecked(false);
 
