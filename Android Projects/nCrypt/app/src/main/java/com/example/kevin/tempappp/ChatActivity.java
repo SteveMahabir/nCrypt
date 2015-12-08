@@ -216,22 +216,22 @@ public class ChatActivity extends Activity {
                 {
                     case Activity.RESULT_OK:
                         if (handled[0]) break;
-                        Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
                         chatMsgs.add(new TextMessage(false, msg, IncomingPhoneNumber, Resources.FormattedDate((new Date()).getTime()), threadid, -1));
                         handled[0] = true;
                         update();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NO_SERVICE:
                         Toast.makeText(context, "No service", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(context, "Null PDU", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Null PDU", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(context, "Radio off", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Radio off", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -247,7 +247,7 @@ public class ChatActivity extends Activity {
                 switch (getResultCode())
                 {
                     case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS Delivered",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "SMS Delivered",Toast.LENGTH_SHORT).show();
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(getBaseContext(), "SMS Not Delivered", Toast.LENGTH_SHORT).show();
@@ -384,7 +384,7 @@ public class ChatActivity extends Activity {
                 }
                 break;
             case R.id.action_remote_delete:
-                Toast.makeText(this, "Deletion signal has been sent", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Deletion signal has been sent", Toast.LENGTH_LONG).show();
                 String panic_message = encryption.sendRemoteDelete(new RemoteDelete(phoneNumber));
                 sendMsg(panic_message);
                 break;
@@ -404,7 +404,7 @@ public class ChatActivity extends Activity {
                     //SID 6 ID 2 Sending an SMS Text needs to be hooked up to the encryption method
 
                     String encrypted_message = encryption.Encrypt(raw_message);
-                    Toast.makeText(getApplicationContext(), "SMS ENCODED", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "SMS ENCODED", Toast.LENGTH_SHORT).show();
 
                     sendMsg(encrypted_message);
                     edtMessage.setText("");
